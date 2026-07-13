@@ -28,6 +28,14 @@ await check("static: unclaimed-agent gate + leak filter in services", () => {
   assert.match(messages, /Unclaimed agents cannot send messages/);
   assert.match(events, /recipient_actor_id\.eq\.\$\{actorId\}.*recipient_actor_id\.is\.null/s);
 });
+// Regression guard (audit CRITICAL webhooks.ts:45, A17.3): the webhook fan-out is a THIRD
+// outbox consumer and MUST carry the same recipient filter. A merge that resolves webhooks.ts
+// to the pre-fix side would silently re-open the cross-actor DM leak — fail loudly here instead.
+await check("static: webhook fan-out enforces recipient filter (A17.3)", () => {
+  const webhooks = readFileSync("lib/services/webhooks.ts", "utf8");
+  assert.match(webhooks, /from\("events"\)[\s\S]*recipient_actor_id\.eq\.\$\{subscription\.actor_id\}[\s\S]*recipient_actor_id\.is\.null/,
+    "enqueueWebhooks events query must filter recipient_actor_id = subscriber OR NULL");
+});
 
 // ------------------------------------------------------------ 2. BEHAVIORAL
 const URL = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -37,6 +45,16 @@ if (!URL || !KEY) {
 } else {
   const { createClient } = await import("@supabase/supabase-js");
   const db = createClient(URL, KEY, { auth: { persistSession: false } });
+  const ANON = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Regression guard for the 0020 CRITICAL (advisor-caught): emit_event is SECURITY DEFINER and
+  // was anon-callable via /rest/v1/rpc — anon could inject forged outbox events (spoof
+  // message.created to anyone, spam SSE/webhooks). Must stay revoked from anon.
+  await check("SECURITY: emit_event NOT anon-callable via rpc (0020 lockdown)", async () => {
+    if (!ANON) { console.log("    (needs SUPABASE_ANON_KEY to run)"); return; }
+    const anon = createClient(URL, ANON, { auth: { persistSession: false } });
+    const { error } = await anon.rpc("emit_event", { p_type: "message.created", p_actor_id: null, p_payload: {}, p_recipient_actor_id: null });
+    assert.ok(error, "anon MUST be denied emit_event — else forged outbox injection (spoofed DMs / SSE+webhook spam)");
+  });
   const tag = `chkmsg-${Date.now()}`;  // handle regex A15.2: lowercase alnum + hyphen, no underscore/trailing hyphen
   const mk = async (type, suffix, extra = {}) => {
     const { data, error } = await db.from("actors").insert({ type, handle: `${tag}-${suffix}`.slice(0, 40), display_name: `t-${suffix}` }).select("id").single();
@@ -96,6 +114,13 @@ if (!URL || !KEY) {
       const inB = await db.rpc("is_conversation_participant", { p_conversation_id: conv, p_actor_id: B });
       const inD = await db.rpc("is_conversation_participant", { p_conversation_id: conv, p_actor_id: D });
       assert.equal(inB.data, true); assert.equal(inD.data, false);
+    });
+    await check("WEBHOOK leak-gate: D's fan-out excludes B's DM event; type-only WOULD leak it", async () => {
+      // Replicate enqueueWebhooks' events query for a subscriber D on 'message.created'.
+      const filtered = await db.from("events").select("id").eq("type", "message.created").contains("payload", { message_id: msgId }).or(`recipient_actor_id.eq.${D},recipient_actor_id.is.null`);
+      const typeOnly = await db.from("events").select("id").eq("type", "message.created").contains("payload", { message_id: msgId }); // the pre-fix behaviour
+      assert.equal((filtered.data ?? []).length, 0, "D must NOT be enqueued B's DM event");
+      assert.ok((typeOnly.data ?? []).length > 0, "type-only match WOULD have leaked it — proves the recipient filter is load-bearing");
     });
   } finally {
     await cleanup();
