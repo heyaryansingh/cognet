@@ -318,6 +318,107 @@ export async function updateAgentProfile(
   return profile;
 }
 
+// ------------------------------------------------- creator console reads
+
+export type MyAgentRow = {
+  actorId: string;
+  handle: string;
+  displayName: string;
+  avatarUrl: string | null;
+  trustScore: number | null;
+  keyCount: number;
+  oldestKeyAgeDays: number | null;
+};
+
+export async function listAgentsByCreator(
+  creatorActorId: string
+): Promise<MyAgentRow[]> {
+  const admin = createAdminClient();
+  const { data, error } = await admin
+    .from("agents")
+    .select(
+      "actor_id, trust_score, actors!agents_actor_id_fkey!inner(handle, display_name, avatar_url), api_keys(created_at, revoked_at)"
+    )
+    .eq("creator_actor_id", creatorActorId)
+    .order("created_at", { ascending: false });
+  if (error) throw new ServiceError(500, error.message);
+
+  type Row = {
+    actor_id: string;
+    trust_score: number | null;
+    actors: { handle: string; display_name: string; avatar_url: string | null };
+    api_keys: Array<{ created_at: string; revoked_at: string | null }>;
+  };
+  return ((data ?? []) as unknown as Row[]).map((r) => {
+    const liveKeys = r.api_keys.filter((k) => !k.revoked_at);
+    const oldest = liveKeys.length
+      ? Math.min(...liveKeys.map((k) => new Date(k.created_at).getTime()))
+      : null;
+    return {
+      actorId: r.actor_id,
+      handle: r.actors.handle,
+      displayName: r.actors.display_name,
+      avatarUrl: r.actors.avatar_url,
+      trustScore: r.trust_score,
+      keyCount: liveKeys.length,
+      oldestKeyAgeDays: oldest
+        ? Math.floor((Date.now() - oldest) / 86_400_000)
+        : null,
+    };
+  });
+}
+
+export type AgentKeyRow = {
+  id: string;
+  name: string;
+  keyPrefix: string;
+  scopes: string[];
+  createdAt: string;
+  lastUsedAt: string | null;
+  expiresAt: string | null;
+  revokedAt: string | null;
+};
+
+export async function listAgentKeys(
+  actingActorId: string,
+  handle: string
+): Promise<AgentKeyRow[]> {
+  const { admin, agent } = await ownedAgent(actingActorId, handle);
+  const { data, error } = await admin
+    .from("api_keys")
+    .select("id, name, key_prefix, scopes, created_at, last_used_at, expires_at, revoked_at")
+    .eq("agent_actor_id", agent.actor_id)
+    .order("created_at", { ascending: false });
+  if (error) throw new ServiceError(500, error.message);
+  return (data ?? []).map((k) => ({
+    id: k.id,
+    name: k.name,
+    keyPrefix: k.key_prefix,
+    scopes: k.scopes,
+    createdAt: k.created_at,
+    lastUsedAt: k.last_used_at,
+    expiresAt: k.expires_at,
+    revokedAt: k.revoked_at,
+  }));
+}
+
+export async function revokeAgentKey(
+  actingActorId: string,
+  handle: string,
+  keyId: string
+): Promise<void> {
+  const { admin, agent } = await ownedAgent(actingActorId, handle);
+  const { data, error } = await admin
+    .from("api_keys")
+    .update({ revoked_at: new Date().toISOString() })
+    .eq("id", keyId)
+    .eq("agent_actor_id", agent.actor_id)
+    .is("revoked_at", null)
+    .select("id");
+  if (error) throw new ServiceError(500, error.message);
+  if (!data || data.length === 0) throw new ServiceError(404, "API key not found");
+}
+
 export type DirectoryFilters = {
   q?: string;
   minTrust?: number;
