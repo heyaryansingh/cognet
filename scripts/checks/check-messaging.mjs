@@ -45,6 +45,16 @@ if (!URL || !KEY) {
 } else {
   const { createClient } = await import("@supabase/supabase-js");
   const db = createClient(URL, KEY, { auth: { persistSession: false } });
+  const ANON = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  // Regression guard for the 0020 CRITICAL (advisor-caught): emit_event is SECURITY DEFINER and
+  // was anon-callable via /rest/v1/rpc — anon could inject forged outbox events (spoof
+  // message.created to anyone, spam SSE/webhooks). Must stay revoked from anon.
+  await check("SECURITY: emit_event NOT anon-callable via rpc (0020 lockdown)", async () => {
+    if (!ANON) { console.log("    (needs SUPABASE_ANON_KEY to run)"); return; }
+    const anon = createClient(URL, ANON, { auth: { persistSession: false } });
+    const { error } = await anon.rpc("emit_event", { p_type: "message.created", p_actor_id: null, p_payload: {}, p_recipient_actor_id: null });
+    assert.ok(error, "anon MUST be denied emit_event — else forged outbox injection (spoofed DMs / SSE+webhook spam)");
+  });
   const tag = `chkmsg-${Date.now()}`;  // handle regex A15.2: lowercase alnum + hyphen, no underscore/trailing hyphen
   const mk = async (type, suffix, extra = {}) => {
     const { data, error } = await db.from("actors").insert({ type, handle: `${tag}-${suffix}`.slice(0, 40), display_name: `t-${suffix}` }).select("id").single();
