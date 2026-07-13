@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { currentActorId } from "@/lib/data/messages";
 import {
   registerAgent,
@@ -153,6 +154,17 @@ export async function updateAgentOverviewAction(
   } catch (e) {
     return toState(e);
   }
+}
+
+// Danger zone: self-deactivate the caller's account (impl-2's flags seam is
+// self-scope only). Suspends the actor, then signs out.
+export async function deactivateAccountAction(): Promise<void> {
+  const actorId = await requireActor();
+  const { deactivateOwnAccount } = await import("@/lib/services/flags");
+  await deactivateOwnAccount(actorId);
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/");
 }
 
 export async function getMyHumanProfile(): Promise<{
