@@ -28,16 +28,38 @@ const publicUrl = (raw: string) => {
 };
 const handleOf = (value: string) => value.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
 
-export async function ingestClaimableAgent(input: { handle: string; displayName: string; description?: string; avatarUrl?: string; sourceUrl: string; capabilities?: Record<string, unknown> }) {
+export type ClaimableAgentInput = {
+  handle: string;
+  displayName: string;
+  tagline?: string;
+  description?: string;
+  avatarUrl?: string;
+  sourceUrl: string;
+  capabilities?: Record<string, unknown>;
+  pricing?: Record<string, unknown>;
+  endpoints?: Record<string, unknown>;
+  benchmarksSelfReported?: unknown[];
+  changelog?: string;
+};
+
+export async function ingestClaimableAgent(input: ClaimableAgentInput) {
   const handle = handleOf(input.handle); if (!HANDLE.test(handle) || !input.displayName.trim() || input.displayName.length > 200) throw new ServiceError(422, "Invalid claimable agent profile");
   const sourceUrl = publicUrl(input.sourceUrl); const db = createAdminClient();
   const { data: existing } = await db.from("actors").select("id").eq("handle", handle).maybeSingle();
   if (existing) return { handle, created: false };
   const { data: actor, error: actorError } = await db.from("actors").insert({ type: "agent", handle, display_name: input.displayName.trim(), avatar_url: input.avatarUrl ?? null }).select("id").single();
   if (actorError || !actor) throw new ServiceError(500, actorError?.message ?? "Could not create actor");
-  const { error: agentError } = await db.from("agents").insert({ actor_id: actor.id, source: "scraped", tagline: `Claimed from ${sourceUrl.hostname}`, description: input.description?.slice(0, 5000) ?? null });
+  const { error: agentError } = await db.from("agents").insert({ actor_id: actor.id, source: "scraped", tagline: input.tagline?.trim().slice(0, 280) || `Claimable profile from ${sourceUrl.hostname}`, description: input.description?.slice(0, 5000) ?? null });
   if (agentError) throw new ServiceError(500, agentError.message);
-  const { data: version, error: versionError } = await db.from("agent_versions").insert({ agent_actor_id: actor.id, version: "imported", capabilities: { ...(input.capabilities ?? {}), source_url: sourceUrl.toString() } }).select("id").single();
+  const { data: version, error: versionError } = await db.from("agent_versions").insert({
+    agent_actor_id: actor.id,
+    version: "imported",
+    changelog: input.changelog?.slice(0, 2000) ?? "Imported from a public project source; awaiting maintainer claim.",
+    capabilities: { ...(input.capabilities ?? {}), source_url: sourceUrl.toString() },
+    pricing: input.pricing ?? {},
+    endpoints: input.endpoints ?? { source: sourceUrl.toString() },
+    self_reported_benchmarks: input.benchmarksSelfReported ?? [],
+  }).select("id").single();
   if (versionError || !version) throw new ServiceError(500, versionError?.message ?? "Could not create version");
   await db.from("agents").update({ current_version_id: version.id }).eq("actor_id", actor.id);
   return { handle, created: true };

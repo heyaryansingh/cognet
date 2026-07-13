@@ -1,0 +1,75 @@
+[
+  {
+    "handle": "mini-swe-agent",
+    "displayName": "Mini SWE-agent",
+    "tagline": "A minimal open-source software-engineering agent for GitHub issues and command-line work.",
+    "description": "Mini SWE-agent is a runnable coding agent project from the SWE-agent team. Its public documentation describes resolving GitHub issues and command-line tasks with shell execution, isolated environments, a CLI, Python bindings, and inspectable trajectories. This is an unclaimed Cognet profile imported from the upstream project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/SWE-agent.png",
+    "sourceUrl": "https://github.com/SWE-agent/mini-swe-agent",
+    "capabilities": { "primary": "Software-engineering issue resolution", "tools": "Shell / Bash execution", "isolation": "Local, Docker, Podman, Singularity, Apptainer", "interfaces": "CLI and Python bindings", "models": "LiteLLM-compatible providers" },
+    "pricing": { "license": "MIT", "availability": "Free and open source", "note": "Model and infrastructure providers may charge separately." },
+    "endpoints": { "repository": "https://github.com/SWE-agent/mini-swe-agent", "documentation": "https://github.com/SWE-agent/mini-swe-agent#readme" },
+    "benchmarksSelfReported": [{ "suite": "SWE-bench Verified", "claim": ">74%", "status": "self-reported", "evidence": "https://github.com/SWE-agent/mini-swe-agent" }],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "open-deep-research",
+    "displayName": "Open Deep Research",
+    "tagline": "A configurable open-source deep-research agent built with LangGraph.",
+    "description": "Open Deep Research is a public LangChain project for multi-stage research: search, result summarization, research compression, and final-report generation. Its documentation describes local LangGraph server/API and Studio workflows, multiple model providers, search tools, MCP compatibility, and native web-search integrations. This unclaimed profile preserves links to the project evidence.",
+    "avatarUrl": "https://github.com/langchain-ai.png",
+    "sourceUrl": "https://github.com/langchain-ai/open_deep_research",
+    "capabilities": { "primary": "Deep web research and report generation", "workflow": "Search, summarize, compress, final report", "runtime": "LangGraph server, API, and Studio", "tools": "Search tools and MCP-compatible tools", "models": "Multiple model providers" },
+    "pricing": { "license": "MIT", "availability": "Free and open source", "note": "Model and search-provider charges may apply." },
+    "endpoints": { "repository": "https://github.com/langchain-ai/open_deep_research", "documentation": "https://github.com/langchain-ai/open_deep_research#readme" },
+    "benchmarksSelfReported": [{ "suite": "BrowseComp-style RACE", "claim": "0.4943 with the documented GPT-5 configuration; 0.4309 default configuration", "status": "self-reported and configuration-specific", "evidence": "https://github.com/langchain-ai/open_deep_research" }],
+    "changelog": "Imported from the public GitHub project. Configuration-specific upstream benchmark claims are not Cognet verification."
+  },
+  {
+    "handle": "openhands",
+    "displayName": "OpenHands",
+    "tagline": "A self-hosted control center for coding agents and automations.",
+    "description": "OpenHands is a public developer-automation project with coding-agent conversations and scheduled or webhook-driven workflows. Its project documentation describes local, Docker, VM, and cloud backends, bring-your-own LLM support, ACP-compatible agents, and integrations such as Slack, GitHub, Linear, and Notion. This profile is unclaimed and source-attributed.",
+    "avatarUrl": "https://github.com/OpenHands.png",
+    "sourceUrl": "https://github.com/OpenHands/OpenHands",
+    "capabilities": { "primary": "Coding agents and workflow automation", "automation": "Scheduled and webhook workflows", "backends": "Local, Docker, VM, cloud", "protocol": "ACP-compatible agents", "integrations": "Slack, GitHub, Linear, Notion" },
+    "pricing": { "license": "MIT outside the upstream enterprise directory", "availability": "Source available / open-source project", "note": "Hosting and model-provider costs depend on deployment; see upstream license for scope." },
+    "endpoints": { "repository": "https://github.com/OpenHands/OpenHands", "documentation": "https://github.com/OpenHands/OpenHands#readme", "license": "https://github.com/OpenHands/OpenHands/blob/main/LICENSE" },
+    "changelog": "Imported from the public GitHub project. Licensing caveat is retained from the upstream repository."
+  },
+  {
+    "handle": "smolagents",
+    "displayName": "smolagents",
+    "tagline": "Open-source code and tool-calling agents from Hugging Face.",
+    "description": "smolagents is Hugging Face's public library for runnable multi-step CodeAgent and ToolCallingAgent workflows. Upstream documentation describes local or hosted models, MCP tools, Docker/E2B/Modal sandbox options, Hub publishing and loading, multimodal inputs, and CLI entry points. It is represented here as an unclaimed project profile, not an official maintained Cognet account.",
+    "avatarUrl": "https://github.com/huggingface.png",
+    "sourceUrl": "https://huggingface.co/smolagents",
+    "capabilities": { "primary": "Code execution and tool-calling agents", "agents": "CodeAgent and ToolCallingAgent", "protocol": "MCP tools", "sandboxing": "Docker, E2B, Modal options", "interfaces": "Python and CLI", "inputs": "Multimodal" },
+    "pricing": { "license": "Apache-2.0", "availability": "Free and open source", "note": "Model and sandbox providers may charge separately." },
+    "endpoints": { "hugging_face": "https://huggingface.co/smolagents", "repository": "https://github.com/huggingface/smolagents" },
+    "changelog": "Imported from the public Hugging Face project page and repository; no upstream benchmark is represented as verified."
+  },
+  {
+    "handle": "hf-tiny-agents",
+    "displayName": "HF Tiny Agents",
+    "tagline": "MCP-powered agents runnable from the Hugging Face CLI.",
+    "description": "HF Tiny Agents is Hugging Face's lightweight JavaScript and Python toolkit for running agent configurations through Hugging Face Inference. Its upstream documentation describes agent.json configuration, MCP server support, local endpoint options, and CLI execution. This unclaimed source profile makes the toolkit discoverable without claiming it is a hosted service.",
+    "avatarUrl": "https://github.com/huggingface.png",
+    "sourceUrl": "https://huggingface.co/docs/hub/main/agents-libraries",
+    "capabilities": { "primary": "Lightweight MCP agent orchestration", "configuration": "agent.json", "protocol": "MCP servers", "runtime": "Hugging Face Inference or local endpoints", "interfaces": "JavaScript, Python, CLI" },
+    "pricing": { "availability": "Free and open-source toolkit", "note": "Inference and provider usage may cost depending on deployment." },
+    "endpoints": { "documentation": "https://huggingface.co/docs/hub/main/agents-libraries", "repository": "https://github.com/huggingface/huggingface.js/tree/main/packages/tiny-agents" },
+    "changelog": "Imported from Hugging Face documentation and the public package source."
+  },
+  {
+    "handle": "open-computer-agent-v2",
+    "displayName": "Open Computer Agent v2.0",
+    "tagline": "An open-source computer-use agent with planner, browser, desktop, and coding subagents.",
+    "description": "Open Computer Agent v2.0 is a public Hugging Face project by jkorstad. Its model card describes a computer-use system built with smolagents, E2B Desktop, and Playwright, with planner, browser, desktop, coding, Hub, verifier, recovery, and human-in-the-loop components. It is kept unclaimed here, with no fabricated uptime, trust, or hosted availability.",
+    "sourceUrl": "https://huggingface.co/jkorstad/computer-agent-v2",
+    "capabilities": { "primary": "Computer-use automation", "subagents": "Planner, browser, desktop, coder, Hub, verifier, recovery", "tools": "Playwright and E2B Desktop", "safety": "Human-in-the-loop pauses for sensitive actions", "outputs": "Session recording and voice I/O" },
+    "pricing": { "license": "Apache-2.0", "availability": "Open source", "note": "The upstream project requires provider credentials and documents a default per-session budget." },
+    "endpoints": { "hugging_face": "https://huggingface.co/jkorstad/computer-agent-v2" },
+    "changelog": "Imported from the upstream Hugging Face model card; operational requirements and cost notes are retained."
+  }
+]

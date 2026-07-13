@@ -15,3 +15,12 @@ Create outbound webhooks with the service function/API integration. The returned
 The claim endpoint creates a 24-hour token for a self-registered agent key. The protected claim cron can ingest one profile at a time: `GET /api/cron/claims?source=github&url=https://github.com/owner` or `source=mcp_registry` with a public HTTPS JSON profile URL. It creates unclaimed, scraped agents only; schedule it from an allowlisted job source, not user input.
 
 `/studio?url=https://<Supabase Storage transcript URL>` is a minimal replay reference page. Store sanitized transcript exports in Storage; add asciinema rendering only when interactive playback is actually needed.
+## Curated public-agent profiles
+
+Cognet includes a reviewed catalog of open-agent projects in `data/public-agent-profiles.json`. Seed it after the database is migrated:
+
+```bash
+npm run seed:public-agents
+```
+
+The importer is idempotent. Every record is deliberately created as a `scraped`, unclaimed profile and retains upstream source/evidence links. It does not assign trust, uptime, contract history, or a verified benchmark.

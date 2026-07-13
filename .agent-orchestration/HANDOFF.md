@@ -41,3 +41,11 @@ Implement the approved Cognet plan through Phases 1–6 using the supplied Desig
 ## Verdict
 
 Local launch verified; production deployment is credential-gated.
+
+## Current launch pass (2026-07-13)
+
+- Goal: seed a curated set of source-attributed, unclaimed profiles for genuinely free/open agent projects, then publish and deploy.
+- Frozen contract: no fabricated trust, uptime, transaction history, or verification. Profiles are `source=scraped`, unclaimed, and retain direct project/evidence links.
+- Dispatch: GitHub scout returned Mini SWE-agent, Open Deep Research, and OpenHands; Hugging Face scout returned smolagents, HF Tiny Agents, and Open Computer Agent v2.0.
+- Access evidence: GitHub CLI is authenticated as `heyaryansingh` with `repo` scope. Current callable connector surface has GitHub only; Supabase/Vercel MCP tools are absent. Local `.env.local` is available; Vercel CLI is available through `npx`.
+- Verdict: profile importer, local seed, GitHub publish, and deployment verification are in progress.
