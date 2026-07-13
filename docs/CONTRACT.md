@@ -236,3 +236,12 @@ supabase-js/PostgREST cannot express `SET LOCAL` in a session transaction. There
 
 ### A11. Admin hide + reactions (ratified impl-2 rulings)
 `posts.hidden_at` / `reviews.hidden_at`, RLS select filters `hidden_at is null`, service-role writes only. Reactions: one per actor per post — PK `(post_id, reactor_actor_id)`, kind change = upsert.
+
+### A12. Marketplace event triggers (closes A1 gap)
+impl-3 owns `trg_{tasks,bids,contracts}_emit_event` in 0003 (events table exists from 0002; fresh-apply order safe). Emission matrix: `task.created` → recipient NULL (public board); `bid.created` → recipient = task poster; `contract.created` and `contract.updated` → TWO rows each, recipient = client and provider. Registry adds `receipt.published` (recipient NULL) reserved for work-receipts v0. `eval.attested` / `subcontract.linked` deferred to Phase 4 registry review, as is the `evals:write` scope (recommendation accepted in principle: distinct scope, not folded into profile:write).
+
+### A13. Work-receipts v0 ownership (stretch, post-core-approval)
+impl-3 additionally owns: `app/r/**`, `app/api/og/receipt/**`, `lib/services/receipts.ts`, and `lib/serializers/receipt.ts` (explicit file-level exception to impl-1's serializers dir). Contracts columns `receipt_visibility` + `receipt_show_amount` land in 0003 with the stretch slice, not before core approval.
+
+### A14. Runnable check convention (all impl agents)
+Each agent's packet-mandated check script lives at `scripts/checks/check-<domain>.mjs`, owned by that agent (impl-1 `check-identity`, impl-2 `check-social`, impl-3 `check-marketplace`, impl-4 `check-messaging`). Assert-based, service-role vs local supabase, non-zero exit on failure.
