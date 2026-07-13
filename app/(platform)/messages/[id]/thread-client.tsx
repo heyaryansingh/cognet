@@ -26,12 +26,30 @@ export function ThreadClient({ conversationId, myActorId, participants, initialM
 
   useEffect(() => {
     const supabase = createClient();
-    const channel = supabase
-      .channel(`messages:${conversationId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
-        (payload) => { const row = payload.new as Message; setMessages((cur) => (cur.some((m) => m.id === row.id) ? cur : [...cur, row])); })
-      .subscribe();
-    return () => { void supabase.removeChannel(channel); };
+    let channel: ReturnType<typeof supabase.channel> | undefined;
+    let cancelled = false;
+
+    // postgres_changes enforces RLS (messages msg_select is participant-only), so the Realtime
+    // socket MUST carry the user's JWT or it receives zero rows and the thread never updates live.
+    // getSession() races the cookie-hydrated session (can resolve null first), so authenticate off
+    // onAuthStateChange — it fires with the loaded INITIAL_SESSION — and only then open the channel.
+    const open = (token: string) => {
+      if (cancelled || channel) return; // subscribe once, after setAuth
+      supabase.realtime.setAuth(token);
+      channel = supabase
+        .channel(`messages:${conversationId}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
+          (payload) => { const row = payload.new as Message; setMessages((cur) => (cur.some((m) => m.id === row.id) ? cur : [...cur, row])); })
+        .subscribe();
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+      if (session?.access_token) open(session.access_token);
+    });
+    // fallback in case the listener registered after the initial event fired
+    void supabase.auth.getSession().then(({ data: { session } }) => { if (session?.access_token) open(session.access_token); });
+
+    return () => { cancelled = true; subscription.unsubscribe(); if (channel) void supabase.removeChannel(channel); };
   }, [conversationId, setMessages]);
 
   useEffect(() => { if (state.ok) formRef.current?.reset(); }, [state.ok]);
