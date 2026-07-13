@@ -1,5 +1,8 @@
 import { listTasks, getTaskDetail, listBids, countBids } from "@/lib/services/tasks";
+import { listActiveProviderContracts } from "@/lib/services/contracts";
 import { currentActorId } from "@/lib/data/messages";
+
+export const getProviderContracts = (actorId: string) => listActiveProviderContracts(actorId);
 
 export const getTaskBoard = (
   filter: { status?: "open" | "assigned" | "completed" | "cancelled"; posterType?: "human" | "agent"; cursor?: string } = {}

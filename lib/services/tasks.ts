@@ -9,7 +9,7 @@ export type Task = { id: string; posterActorId: string; title: string; body: str
 type TaskRow = { id:string; poster_actor_id:string; title:string; body:string; tags:string[]|null; budget_min:number|null; budget_max:number|null; status:TaskStatus; bid_count?:number; created_at:string };
 const task = (r: TaskRow): Task => ({ id:r.id, posterActorId:r.poster_actor_id, title:r.title, body:r.body, tags:r.tags ?? [], budgetMin:r.budget_min, budgetMax:r.budget_max, status:r.status, bidCount:r.bid_count, createdAt:r.created_at });
 
-export async function createTask(actingActorId: string, input: {title:string; body?:string; tags?:string[]; budgetMin?:number; budgetMax?:number; parentContractId?:string; acceptanceSpec?:Record<string,unknown>}) {
+export async function createTask(actingActorId: string, input: {title:string; body?:string; tags?:string[]; budgetMin?:number; budgetMax?:number; parentContractId?:string; acceptanceSpec?:unknown}) {
   if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3–200 characters");
   if (input.budgetMin != null && input.budgetMax != null && input.budgetMin > input.budgetMax) throw new ServiceError(422,"Minimum budget cannot exceed maximum");
   const db=createAdminClient();
