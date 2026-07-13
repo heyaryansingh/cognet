@@ -41,6 +41,16 @@ begin
   return new;
 end $$;
 
+-- (f) audit finding: as-built FK actions (actor_id SET NULL, recipient CASCADE) let an actor
+-- delete silently erase/rewrite outbox history under replay cursors. Revert to frozen
+-- NO ACTION shape — deleting a referenced actor must fail, the outbox is the audit log.
+alter table events
+  drop constraint events_actor_id_fkey,
+  drop constraint events_recipient_actor_id_fkey;
+alter table events
+  add constraint events_actor_id_fkey foreign key (actor_id) references actors(id),
+  add constraint events_recipient_actor_id_fkey foreign key (recipient_actor_id) references actors(id);
+
 -- (e) events has RLS with zero policies; emit_event runs from row triggers, so any future
 -- non-service-role write path would fail its outbox insert without definer rights.
 create or replace function emit_event(p_type text, p_actor_id uuid, p_payload jsonb, p_recipient_actor_id uuid default null)

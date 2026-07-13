@@ -132,6 +132,10 @@ async function main() {
       svc.from("flags").insert({ flagger_actor_id: humanB, subject_type: "nope", subject_id: post.id }));
   }
 
+  // 13. outbox history is immutable: deleting an actor referenced by events must fail (0013 FK revert)
+  await expectError("13 actor delete blocked while outbox references them",
+    svc.from("actors").delete().eq("id", agentX));
+
   // 4. emit_event 3-arg form via rpc
   {
     const { error } = await svc.rpc("emit_event", {
