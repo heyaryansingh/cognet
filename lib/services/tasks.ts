@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase/admin";
+﻿import { createAdminClient } from "@/lib/supabase/admin";
 import { decodeCursor, encodeCursor } from "@/lib/api/http";
 import { ServiceError } from "@/lib/services/agents";
 import { getOrCreateDirectConversation } from "@/lib/services/messages";
@@ -10,7 +10,7 @@ type TaskRow = { id:string; poster_actor_id:string; title:string; body:string; t
 const task = (r: TaskRow): Task => ({ id:r.id, posterActorId:r.poster_actor_id, title:r.title, body:r.body, tags:r.tags ?? [], budgetMin:r.budget_min, budgetMax:r.budget_max, status:r.status, bidCount:r.bid_count, createdAt:r.created_at });
 
 export async function createTask(actingActorId: string, input: {title:string; body?:string; tags?:string[]; budgetMin?:number; budgetMax?:number; parentContractId?:string; acceptanceSpec?:unknown}) {
-  if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3–200 characters");
+  if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3-200 characters");
   if (input.budgetMin != null && input.budgetMax != null && input.budgetMin > input.budgetMax) throw new ServiceError(422,"Minimum budget cannot exceed maximum");
   const db=createAdminClient();
   if (input.parentContractId) { const {data}=await db.from("contracts").select("provider_actor_id,status").eq("id",input.parentContractId).maybeSingle(); if (!data || data.provider_actor_id!==actingActorId || data.status!=="active") throw new ServiceError(403,"Only an active contract provider can subcontract"); }
@@ -24,7 +24,7 @@ export type TaskWithPoster = Task & { poster:{ handle:string; displayName:string
 // ruling 13:31:46). posterType = the co-equal-citizens filter (wireframe).
 export async function listTasks(filter:{status?:TaskStatus;tag?:string;posterType?:"human"|"agent";cursor?:string;limit?:number}={}) : Promise<Page<TaskWithPoster>> {
   const db=createAdminClient(), limit=Math.min(Math.max(filter.limit??25,1),50);
-  let q=db.from("tasks").select("*, poster:actors!tasks_poster_actor_id_fkey!inner(handle,display_name,avatar_url,type,status,agents(creator_actor_id))").eq("poster.status","active").eq("status",filter.status??"open").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(limit+1);
+  let q=db.from("tasks").select("*, poster:actors!tasks_poster_actor_id_fkey!inner(handle,display_name,avatar_url,type,status,agents!agents_actor_id_fkey(creator_actor_id))").eq("poster.status","active").eq("status",filter.status??"open").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(limit+1);
   if(filter.tag) q=q.contains("tags",[filter.tag]); if(filter.posterType) q=q.eq("poster.type",filter.posterType);
   const c=filter.cursor&&decodeCursor(filter.cursor); if(c) q=q.or(`created_at.lt.${c.ts},and(created_at.eq.${c.ts},id.lt.${c.id})`);
   const {data,error}=await q; if(error) throw new ServiceError(500,error.message);
@@ -42,7 +42,7 @@ const identity=(a:ActorJoin):ActorIdentitySummary=>({actorId:a.id,handle:a.handl
 // Task detail page needs poster identity (glyph/AI-label derive from actors.type).
 export async function getTaskDetail(id:string) {
   const db=createAdminClient();
-  const {data,error}=await db.from("tasks").select("*, poster:actors!tasks_poster_actor_id_fkey(id,handle,display_name,avatar_url,type,agents(creator_actor_id,trust_score))").eq("id",id).maybeSingle();
+  const {data,error}=await db.from("tasks").select("*, poster:actors!tasks_poster_actor_id_fkey(id,handle,display_name,avatar_url,type,agents!agents_actor_id_fkey(creator_actor_id,trust_score))").eq("id",id).maybeSingle();
   if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found");
   const {poster,...row}=data;
   return {...task(row as TaskRow), parentContractId:(row as {parent_contract_id:string|null}).parent_contract_id, acceptanceSpec:(row as {acceptance_spec:unknown}).acceptance_spec, poster:identity(poster as ActorJoin)};
@@ -57,7 +57,7 @@ export async function listBids(viewerActorId:string|null,taskId:string):Promise<
   const {data:job}=await db.from("tasks").select("poster_actor_id").eq("id",taskId).maybeSingle();
   if(!job) throw new ServiceError(404,"Task not found");
   if(!viewerActorId) return [];
-  let q=db.from("bids").select("id,amount,proposal,status,created_at, bidder:actors!bids_bidder_actor_id_fkey(id,handle,display_name,avatar_url,type,agents(creator_actor_id,trust_score))").eq("task_id",taskId).order("created_at",{ascending:true});
+  let q=db.from("bids").select("id,amount,proposal,status,created_at, bidder:actors!bids_bidder_actor_id_fkey(id,handle,display_name,avatar_url,type,agents!agents_actor_id_fkey(creator_actor_id,trust_score))").eq("task_id",taskId).order("created_at",{ascending:true});
   if(job.poster_actor_id!==viewerActorId) q=q.eq("bidder_actor_id",viewerActorId);
   const {data,error}=await q; if(error) throw new ServiceError(500,error.message);
   return (data??[]).map(b=>({id:b.id,amount:b.amount,proposal:b.proposal,status:b.status,createdAt:b.created_at,bidder:identity(b.bidder as unknown as ActorJoin)}));
@@ -68,8 +68,8 @@ export async function countBids(taskId:string):Promise<number> {
   return count??0;
 }
 
-// Seam ruling 17:22:57: after the hire tx COMMITS, open the client↔provider
-// DM (idempotent get_or_create_dm). Best-effort — a DM failure never fails
+// Seam ruling 17:22:57: after the hire tx COMMITS, open the client-provider
+// DM (idempotent get_or_create_dm). Best-effort - a DM failure never fails
 // the hire.
 async function openContractDm(clientActorId:string,providerActorId:string) {
   try { await getOrCreateDirectConversation(clientActorId, providerActorId); }
@@ -78,12 +78,12 @@ async function openContractDm(clientActorId:string,providerActorId:string) {
 
 export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0001"?404:error.code==="42501"?403:409,error.message); await openContractDm(data.client_actor_id,data.provider_actor_id); return {contractId:data.id}; }
 
-// Direct hire (director ruling 13:40:28 option a) — impl-1's HireModal calls this.
+// Direct hire (director ruling 13:40:28 option a) - impl-1's HireModal calls this.
 // One atomic hire_agent() rpc: task + single bid + accept_bid(); partial failure
 // rolls back everything, so retries cannot orphan an open task.
 export async function hireAgent(actingActorId:string,input:{agentActorId:string;title:string;scope?:string;amount:number}) {
   if (!(input.amount>=0)) throw new ServiceError(422,"Amount must be >= 0");
-  if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3–200 characters");
+  if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3-200 characters");
   const {data,error}=await createAdminClient().rpc("hire_agent",{p_acting_actor_id:actingActorId,p_agent_actor_id:input.agentActorId,p_title:input.title.trim(),p_body:input.scope??"",p_amount:input.amount});
   if(error) throw new ServiceError(error.code==="P0002"?404:error.code==="42501"?403:409,error.message);
   await openContractDm(data.client_actor_id,data.provider_actor_id);

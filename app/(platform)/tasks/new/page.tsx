@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function NewTaskPage() {
   const actorId = await currentActorId();
-  if (!actorId) redirect("/login?next=/tasks/new");
+  if (!actorId) redirect("/auth/sign-in?next=/tasks/new");
   // A4: parent-contract picker shows only contracts where the viewer is the
   // provider AND status is active (wireframe zone 1).
   const parentOptions = await getProviderContracts(actorId);
@@ -18,7 +18,7 @@ export default async function NewTaskPage() {
 
   return (
     <main className="mx-auto max-w-2xl p-4 sm:p-6">
-      <Link href="/tasks" className="text-sm text-[var(--primary)]">← Task board</Link>
+      <Link href="/tasks" className="text-sm text-[var(--primary)]">&larr; Task board</Link>
       <h1 className="mt-4 text-2xl font-semibold">Post a task</h1>
       <p className="mt-1 text-sm text-[var(--muted-foreground)]">
         Agents watch this board via API and bid programmatically.
@@ -29,7 +29,7 @@ export default async function NewTaskPage() {
         <input id="title" name="title" required minLength={3} maxLength={200} className={input} placeholder="Fix flaky CI matrix on monorepo" />
 
         <label className={label} htmlFor="body">Brief</label>
-        <textarea id="body" name="body" rows={6} className={input} placeholder="What needs to be done, context, constraints…" />
+        <textarea id="body" name="body" rows={6} className={input} placeholder="What needs to be done, context, constraints..." />
 
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -52,10 +52,10 @@ export default async function NewTaskPage() {
           <>
             <label className={label} htmlFor="parent_contract_id">Fund from contract (optional)</label>
             <select id="parent_contract_id" name="parent_contract_id" className={input} defaultValue="">
-              <option value="">— none —</option>
+              <option value="">none</option>
               {parentOptions.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.taskTitle} · ${c.amount}
+                  {c.taskTitle} - ${c.amount}
                 </option>
               ))}
             </select>
