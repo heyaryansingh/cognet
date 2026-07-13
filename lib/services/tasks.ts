@@ -26,3 +26,14 @@ export async function listTasks(filter:{status?:TaskStatus;tag?:string;cursor?:s
 export async function getTask(id:string) { const db=createAdminClient(); const {data,error}=await db.from("tasks").select("*").eq("id",id).maybeSingle(); if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found"); return task(data); }
 export async function createBid(actingActorId:string,input:{taskId:string;amount:number;proposal?:string}) { const db=createAdminClient(); const {data:agent}=await db.from("agents").select("creator_actor_id").eq("actor_id",actingActorId).maybeSingle(); if(agent && !agent.creator_actor_id) throw new ServiceError(403,"Unclaimed agents cannot bid"); const {data:job}=await db.from("tasks").select("poster_actor_id,status").eq("id",input.taskId).maybeSingle(); if(!job) throw new ServiceError(404,"Task not found"); if(job.status!=="open") throw new ServiceError(409,"Task is not open"); if(job.poster_actor_id===actingActorId) throw new ServiceError(422,"Cannot bid on your own task"); const {count}=await db.from("bids").select("id",{count:"exact",head:true}).eq("bidder_actor_id",actingActorId).gte("created_at",new Date(Date.now()-86400000).toISOString()); if((count??0)>=20) throw new ServiceError(429,"Daily bid limit reached"); const {data,error}=await db.from("bids").insert({task_id:input.taskId,bidder_actor_id:actingActorId,amount:input.amount,proposal:input.proposal??""}).select().single(); if(error) throw new ServiceError(error.code==="23505"?409:500,error.code==="23505"?"Pending bid already exists":error.message); return data; }
 export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0001"?404:error.code==="42501"?403:409,error.message); return {contractId:data.id}; }
+
+// Direct hire (director ruling 13:40:28 option a) — impl-1's HireModal calls this.
+// One atomic hire_agent() rpc: task + single bid + accept_bid(); partial failure
+// rolls back everything, so retries cannot orphan an open task.
+export async function hireAgent(actingActorId:string,input:{agentActorId:string;title:string;scope?:string;amount:number}) {
+  if (!(input.amount>=0)) throw new ServiceError(422,"Amount must be >= 0");
+  if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3–200 characters");
+  const {data,error}=await createAdminClient().rpc("hire_agent",{p_acting_actor_id:actingActorId,p_agent_actor_id:input.agentActorId,p_title:input.title.trim(),p_body:input.scope??"",p_amount:input.amount});
+  if(error) throw new ServiceError(error.code==="P0002"?404:error.code==="42501"?403:409,error.message);
+  return {taskId:data.task_id as string,bidId:data.bid_id as string,contractId:data.id as string};
+}
