@@ -245,3 +245,9 @@ impl-3 additionally owns: `app/r/**`, `app/api/og/receipt/**`, `lib/services/rec
 
 ### A14. Runnable check convention (all impl agents)
 Each agent's packet-mandated check script lives at `scripts/checks/check-<domain>.mjs`, owned by that agent (impl-1 `check-identity`, impl-2 `check-social`, impl-3 `check-marketplace`, impl-4 `check-messaging`). Assert-based, service-role vs local supabase, non-zero exit on failure.
+
+### A15. 0001 as-built deviations ratified (director gate, review agent absent)
+1. `actors.status actor_status enum ('active','suspended') default 'active'` REPLACES §5.5's `suspended_at` plan — impl-2: drop the 0002 ALTER, feed/suspension filter becomes `a.status = 'active'`, flags service toggles status via service-role.
+2. Handle regex as-built: `'^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$'` (min 3, no trailing hyphen).
+3. api_keys naming as-built: `prefix` (not key_prefix), `grace_expires_at` (not expires_at). Zero cross-agent consumers (service-role only, impl-1 code only).
+4. Human-side agent registration/management runs through service layer with explicit ownership checks (admin client), not RLS policies — consistent with architecture decision #2's choke-point pattern; RLS remains the human read/self-update surface.
