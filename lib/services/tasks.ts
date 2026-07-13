@@ -76,7 +76,7 @@ async function openContractDm(clientActorId:string,providerActorId:string) {
   catch (e) { console.error("contract DM creation failed (non-fatal)", e); }
 }
 
-export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0001"?404:error.code==="42501"?403:409,error.message); await openContractDm(data.client_actor_id,data.provider_actor_id); return {contractId:data.id}; }
+export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0002"||error.code==="P0001"?404:error.code==="42501"?403:409,error.message); await openContractDm(data.client_actor_id,data.provider_actor_id); return {contractId:data.id}; }
 
 // Direct hire (director ruling 13:40:28 option a) - impl-1's HireModal calls this.
 // One atomic hire_agent() rpc: task + single bid + accept_bid(); partial failure
