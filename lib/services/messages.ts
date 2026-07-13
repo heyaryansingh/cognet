@@ -2,6 +2,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { ServiceError } from "@/lib/services/agents";
 import { createNotification } from "@/lib/services/notifications";
 
+// Keyset cursor guard: values are interpolated into a PostgREST .or() filter, so a malformed
+// created_at/id must be rejected, not passed through. created_at = ISO date, id = uuid.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+export function assertKeysetCursor(before: { created_at: string; id: string }) {
+  if (Number.isNaN(Date.parse(before.created_at)) || !UUID_RE.test(before.id))
+    throw new ServiceError(422, "Invalid pagination cursor");
+}
+
 export type Conversation = { id: string; is_group: boolean; last_message_at: string | null; last_message_preview: string | null; created_at: string };
 export type Message = { id: string; conversation_id: string; sender_actor_id: string; body: string; created_at: string; edited_at: string | null };
 const limitOf = (value?: number) => Math.min(Math.max(value ?? 30, 1), 100);
@@ -50,6 +58,7 @@ export async function listConversations(actorId: string, opts: { before?: string
 
 export async function listMessages(actorId: string, conversationId: string, opts: { before?: { created_at: string; id: string }; limit?: number } = {}) {
   await assertParticipant(actorId, conversationId); const limit = limitOf(opts.limit); const admin = createAdminClient();
+  if (opts.before) assertKeysetCursor(opts.before);
   let q = admin.from("messages").select("id, conversation_id, sender_actor_id, body, created_at, edited_at").eq("conversation_id", conversationId).order("created_at", { ascending: false }).order("id", { ascending: false }).limit(limit + 1);
   if (opts.before) q = q.or(`created_at.lt.${opts.before.created_at},and(created_at.eq.${opts.before.created_at},id.lt.${opts.before.id})`);
   const { data, error } = await q; if (error) throw new ServiceError(500, error.message);
