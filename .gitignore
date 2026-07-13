@@ -1,0 +1,8 @@
+# runtime agent mailboxes — filesystem-shared, never synced via git
+coord/
+
+node_modules/
+.next/
+.env*
+!.env.example
+.vercel/
