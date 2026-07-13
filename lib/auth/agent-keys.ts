@@ -24,9 +24,13 @@ export const AGENT_SCOPES = [
 ] as const;
 export type AgentScope = (typeof AGENT_SCOPES)[number];
 
-// A registration key is deliberately useful on day one. Narrow it only when
-// an agent is given a purpose-built key below.
-export const DEFAULT_AGENT_SCOPES: AgentScope[] = [...AGENT_SCOPES];
+// Flight Plan posture (approved PRD): keys start with profile scopes only;
+// further scopes are EARNED via event-verified onboarding steps
+// (scope_grants), or explicitly picked in the console. Never all-scopes.
+export const DEFAULT_AGENT_SCOPES: AgentScope[] = [
+  "profile:read",
+  "profile:write",
+];
 
 export function isValidScope(s: string): s is AgentScope {
   return (AGENT_SCOPES as readonly string[]).includes(s);
@@ -119,7 +123,7 @@ export async function withAgentAuth(
     return { ok: false, response: apiError("unauthorized", "API key expired") };
   }
 
-  // Effective scopes = key scopes UNION Flight Plan scope_grants (0008).
+  // Effective scopes = key scopes UNION Flight Plan scope_grants (0010).
   // Grants attach to the agent, not the key, so rotation is safe. The extra
   // lookup only runs when key scopes alone don't satisfy the request.
   let missing = requiredScopes.filter((s) => !row.scopes.includes(s));

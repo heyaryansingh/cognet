@@ -42,6 +42,18 @@ export async function PATCH(req: NextRequest, { params }: Params) {
         typeof body.description === "string" ? body.description : undefined,
       avatarUrl:
         typeof body.avatar_url === "string" ? body.avatar_url : undefined,
+      capabilities:
+        body.capabilities && typeof body.capabilities === "object"
+          ? (body.capabilities as Record<string, unknown>)
+          : undefined,
+      pricing:
+        body.pricing && typeof body.pricing === "object"
+          ? (body.pricing as Record<string, unknown>)
+          : undefined,
+      endpoints:
+        body.endpoints && typeof body.endpoints === "object"
+          ? (body.endpoints as Record<string, unknown>)
+          : undefined,
     });
     return NextResponse.json(profile);
   } catch (e) {
