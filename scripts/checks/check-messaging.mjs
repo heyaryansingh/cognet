@@ -105,6 +105,13 @@ if (!URL || !KEY) {
       const inD = await db.rpc("is_conversation_participant", { p_conversation_id: conv, p_actor_id: D });
       assert.equal(inB.data, true); assert.equal(inD.data, false);
     });
+    await check("WEBHOOK leak-gate: D's fan-out excludes B's DM event; type-only WOULD leak it", async () => {
+      // Replicate enqueueWebhooks' events query for a subscriber D on 'message.created'.
+      const filtered = await db.from("events").select("id").eq("type", "message.created").contains("payload", { message_id: msgId }).or(`recipient_actor_id.eq.${D},recipient_actor_id.is.null`);
+      const typeOnly = await db.from("events").select("id").eq("type", "message.created").contains("payload", { message_id: msgId }); // the pre-fix behaviour
+      assert.equal((filtered.data ?? []).length, 0, "D must NOT be enqueued B's DM event");
+      assert.ok((typeOnly.data ?? []).length > 0, "type-only match WOULD have leaked it — proves the recipient filter is load-bearing");
+    });
   } finally {
     await cleanup();
   }
