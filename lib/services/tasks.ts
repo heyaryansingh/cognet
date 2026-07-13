@@ -26,6 +26,39 @@ export async function listTasks(filter:{status?:TaskStatus;tag?:string;cursor?:s
 
 export async function getTask(id:string) { const db=createAdminClient(); const {data,error}=await db.from("tasks").select("*").eq("id",id).maybeSingle(); if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found"); return task(data); }
 export async function createBid(actingActorId:string,input:{taskId:string;amount:number;proposal?:string}) { const db=createAdminClient(); const {data:agent}=await db.from("agents").select("creator_actor_id").eq("actor_id",actingActorId).maybeSingle(); if(agent && !agent.creator_actor_id) throw new ServiceError(403,"Unclaimed agents cannot bid"); const {data:job}=await db.from("tasks").select("poster_actor_id,status").eq("id",input.taskId).maybeSingle(); if(!job) throw new ServiceError(404,"Task not found"); if(job.status!=="open") throw new ServiceError(409,"Task is not open"); if(job.poster_actor_id===actingActorId) throw new ServiceError(422,"Cannot bid on your own task"); const {count}=await db.from("bids").select("id",{count:"exact",head:true}).eq("bidder_actor_id",actingActorId).gte("created_at",new Date(Date.now()-86400000).toISOString()); if((count??0)>=20) throw new ServiceError(429,"Daily bid limit reached"); const {data,error}=await db.from("bids").insert({task_id:input.taskId,bidder_actor_id:actingActorId,amount:input.amount,proposal:input.proposal??""}).select().single(); if(error) throw new ServiceError(error.code==="23505"?409:500,error.code==="23505"?"Pending bid already exists":error.message); return data; }
+export type ActorIdentitySummary = { actorId:string; handle:string; displayName:string; avatarUrl:string|null; type:"human"|"agent"|"org"; claimed:boolean; trustScore:number|null };
+type ActorJoin = { id:string; handle:string; display_name:string; avatar_url:string|null; type:"human"|"agent"|"org"; agents:{ creator_actor_id:string|null; trust_score:number|null }[]|null };
+const identity=(a:ActorJoin):ActorIdentitySummary=>({actorId:a.id,handle:a.handle,displayName:a.display_name,avatarUrl:a.avatar_url,type:a.type,claimed:a.type!=="agent"||!!a.agents?.[0]?.creator_actor_id,trustScore:a.agents?.[0]?.trust_score??null});
+
+// Task detail page needs poster identity (glyph/AI-label derive from actors.type).
+export async function getTaskDetail(id:string) {
+  const db=createAdminClient();
+  const {data,error}=await db.from("tasks").select("*, poster:actors!tasks_poster_actor_id_fkey(id,handle,display_name,avatar_url,type,agents(creator_actor_id,trust_score))").eq("id",id).maybeSingle();
+  if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found");
+  const {poster,...row}=data;
+  return {...task(row as TaskRow), parentContractId:(row as {parent_contract_id:string|null}).parent_contract_id, acceptanceSpec:(row as {acceptance_spec:unknown}).acceptance_spec, poster:identity(poster as ActorJoin)};
+}
+
+export type BidWithBidder = { id:string; amount:number; proposal:string; status:string; createdAt:string; bidder:ActorIdentitySummary };
+
+// Visibility mirrors bids RLS: poster sees all bids; a bidder sees only their
+// own; anyone else sees none. (Public bids = open product question w/ review.)
+export async function listBids(viewerActorId:string|null,taskId:string):Promise<BidWithBidder[]> {
+  const db=createAdminClient();
+  const {data:job}=await db.from("tasks").select("poster_actor_id").eq("id",taskId).maybeSingle();
+  if(!job) throw new ServiceError(404,"Task not found");
+  if(!viewerActorId) return [];
+  let q=db.from("bids").select("id,amount,proposal,status,created_at, bidder:actors!bids_bidder_actor_id_fkey(id,handle,display_name,avatar_url,type,agents(creator_actor_id,trust_score))").eq("task_id",taskId).order("created_at",{ascending:true});
+  if(job.poster_actor_id!==viewerActorId) q=q.eq("bidder_actor_id",viewerActorId);
+  const {data,error}=await q; if(error) throw new ServiceError(500,error.message);
+  return (data??[]).map(b=>({id:b.id,amount:b.amount,proposal:b.proposal,status:b.status,createdAt:b.created_at,bidder:identity(b.bidder as unknown as ActorJoin)}));
+}
+
+export async function countBids(taskId:string):Promise<number> {
+  const {count}=await createAdminClient().from("bids").select("id",{count:"exact",head:true}).eq("task_id",taskId).neq("status","withdrawn");
+  return count??0;
+}
+
 // Seam ruling 17:22:57: after the hire tx COMMITS, open the client↔provider
 // DM (idempotent get_or_create_dm). Best-effort — a DM failure never fails
 // the hire.
