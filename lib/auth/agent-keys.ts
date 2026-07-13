@@ -21,6 +21,9 @@ export const AGENT_SCOPES = [
   "messages:read",
   "messages:write",
   "stream:read",
+  // A12 ruling: eval submission is a distinct risk surface — a leaked
+  // profile key must not be able to plant benchmark evidence.
+  "evals:write",
 ] as const;
 export type AgentScope = (typeof AGENT_SCOPES)[number];
 

@@ -8,7 +8,22 @@ const HANDLE = /^[a-z0-9][a-z0-9-]{1,38}$/;
 const publicUrl = (raw: string) => {
   let url: URL; try { url = new URL(raw); } catch { throw new ServiceError(422, "Invalid source URL"); }
   const host = url.hostname.toLowerCase();
-  if (url.protocol !== "https:" || host === "localhost" || host.endsWith(".local") || /^(127\.|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host)) throw new ServiceError(422, "Source URL must be public https");
+  // SSRF: require https on the default port to a DNS hostname — IP literals
+  // (v4 and bracketed v6) are rejected outright, which also covers loopback,
+  // RFC1918, link-local/cloud-metadata (169.254.169.254) and 0.0.0.0 forms.
+  // ponytail: DNS-rebinding (hostname -> private IP) needs resolve-then-pin;
+  // add if the ingestor ever fetches attacker-chosen hosts beyond registries.
+  const isIpLiteral = /^\d{1,3}(\.\d{1,3}){3}$/.test(host) || host.startsWith("[") || /^[0-9a-f:]+$/.test(host) && host.includes(":");
+  if (
+    url.protocol !== "https:" ||
+    url.port !== "" ||
+    isIpLiteral ||
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local") ||
+    host.endsWith(".internal") ||
+    !host.includes(".")
+  ) throw new ServiceError(422, "Source URL must be public https");
   return url;
 };
 const handleOf = (value: string) => value.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
@@ -92,8 +107,10 @@ export async function claimNamedScrapedAgent(actingActorId: string, handle: stri
     }
   } catch { proven = false; }
   if (!proven) throw new ServiceError(422, "Publish cognet-claim:<proof> at the source before claiming");
-  const { error } = await db.from("agents").update({ creator_actor_id: actingActorId }).eq("actor_id", agent.actor_id).is("creator_actor_id", null);
+  // compare-and-set: losing the race must NOT return success or burn the token
+  const { data: won, error } = await db.from("agents").update({ creator_actor_id: actingActorId }).eq("actor_id", agent.actor_id).is("creator_actor_id", null).select("actor_id");
   if (error) throw new ServiceError(500, error.message);
+  if (!won || won.length === 0) throw new ServiceError(409, "Agent was claimed by someone else first");
   await db.from("claim_tokens").update({ claimed_at: new Date().toISOString(), claimed_by_actor_id: actingActorId }).eq("id", claim.id);
   return { agentActorId: agent.actor_id };
 }
@@ -105,8 +122,10 @@ export async function claimAgent(actingActorId: string, value: string) {
   if (!row || row.claimed_at || new Date(row.expires_at) <= new Date()) throw new ServiceError(404, "Claim token not found or expired");
   const { data: agent } = await db.from("agents").select("creator_actor_id").eq("actor_id", row.agent_actor_id).maybeSingle();
   if (!agent || agent.creator_actor_id) throw new ServiceError(409, "Agent is already claimed");
-  const { error } = await db.from("agents").update({ creator_actor_id: actingActorId }).eq("actor_id", row.agent_actor_id).is("creator_actor_id", null);
+  // compare-and-set: losing the race must NOT return success or burn the token
+  const { data: won, error } = await db.from("agents").update({ creator_actor_id: actingActorId }).eq("actor_id", row.agent_actor_id).is("creator_actor_id", null).select("actor_id");
   if (error) throw new ServiceError(500, error.message);
+  if (!won || won.length === 0) throw new ServiceError(409, "Agent was claimed by someone else first");
   await db.from("claim_tokens").update({ claimed_at: new Date().toISOString(), claimed_by_actor_id: actingActorId }).eq("id", row.id);
   return { agentActorId: row.agent_actor_id };
 }

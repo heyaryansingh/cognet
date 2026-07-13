@@ -126,20 +126,50 @@ async function ownedAgent(actingActorId: string, handle: string) {
   return { admin, agent };
 }
 
-export async function createAgentKey(actingActorId: string, handle: string, input: { name?: string; scopes?: string[] }): Promise<{ id: string; key: string; scopes: AgentScope[] }> {
+// Scope ceiling for key-authenticated minting: the calling key's scopes UNION
+// the agent's earned scope_grants. A profile:write key must never mint
+// broader keys (audit finding agents.ts:131). Human sessions (no callerKeyId)
+// are bounded only by the registry — creators own their agents.
+async function assertWithinCallerCeiling(
+  admin: ReturnType<typeof createAdminClient>,
+  agentActorId: string,
+  callerKeyId: string,
+  requested: string[]
+): Promise<void> {
+  const [{ data: callerKey }, { data: grants }] = await Promise.all([
+    admin.from("api_keys").select("scopes").eq("id", callerKeyId).maybeSingle(),
+    admin.from("scope_grants").select("scope").eq("agent_actor_id", agentActorId),
+  ]);
+  const ceiling = new Set([
+    ...(callerKey?.scopes ?? []),
+    ...(grants ?? []).map((g) => g.scope),
+  ]);
+  const over = requested.filter((s) => !ceiling.has(s));
+  if (over.length > 0) {
+    throw new ServiceError(403, `Cannot mint scopes beyond the calling key's: ${over.join(", ")}`);
+  }
+}
+
+export async function createAgentKey(actingActorId: string, handle: string, input: { name?: string; scopes?: string[]; callerKeyId?: string }): Promise<{ id: string; key: string; scopes: AgentScope[] }> {
   const { admin, agent } = await ownedAgent(actingActorId, handle);
-  const scopes = input.scopes?.length ? input.scopes : DEFAULT_AGENT_SCOPES;
+  // requested scopes are taken literally — empty stays empty, never inverts
+  // to a default set (audit finding: [] silently became all scopes)
+  const scopes = input.scopes ?? [];
   if (!scopes.every(isValidScope)) throw new ServiceError(422, "Invalid API key scope");
+  if (input.callerKeyId) await assertWithinCallerCeiling(admin, agent.actor_id, input.callerKeyId, scopes);
   const { key, prefix, hash } = generateApiKey();
   const { data, error } = await admin.from("api_keys").insert({ agent_actor_id: agent.actor_id, name: input.name?.trim().slice(0, 100) || "default", key_prefix: prefix, key_hash: hash, scopes }).select("id").single();
   if (error || !data) throw new ServiceError(500, error?.message ?? "Failed to create API key");
   return { id: data.id, key, scopes: scopes as AgentScope[] };
 }
 
-export async function rotateAgentKey(actingActorId: string, handle: string, keyId: string): Promise<{ id: string; key: string; scopes: AgentScope[]; oldKeyExpiresAt: string }> {
+export async function rotateAgentKey(actingActorId: string, handle: string, keyId: string, callerKeyId?: string): Promise<{ id: string; key: string; scopes: AgentScope[]; oldKeyExpiresAt: string }> {
   const { admin, agent } = await ownedAgent(actingActorId, handle);
   const { data: oldKey } = await admin.from("api_keys").select("id,name,scopes,revoked_at").eq("id", keyId).eq("agent_actor_id", agent.actor_id).maybeSingle();
   if (!oldKey || oldKey.revoked_at) throw new ServiceError(404, "API key not found");
+  // key-authenticated rotation of a BROADER key is escalation — the new key
+  // copies the old scopes, so the ceiling check must run against them
+  if (callerKeyId) await assertWithinCallerCeiling(admin, agent.actor_id, callerKeyId, oldKey.scopes);
   const expiresAt = new Date(Date.now() + 24 * 60 * 60_000).toISOString();
   const { error } = await admin.from("api_keys").update({ expires_at: expiresAt }).eq("id", oldKey.id);
   if (error) throw new ServiceError(500, error.message);
@@ -318,8 +348,10 @@ export async function searchAgents(
   let query = admin
     .from("agents")
     .select(
-      "actor_id, tagline, trust_score, creator_actor_id, actors!agents_actor_id_fkey(handle, display_name, avatar_url)"
+      "actor_id, tagline, trust_score, creator_actor_id, actors!agents_actor_id_fkey!inner(handle, display_name, avatar_url)"
     )
+    // admin client bypasses RLS — suspended actors must be filtered here
+    .eq("actors.status", "active")
     .order("trust_score", { ascending: false, nullsFirst: false })
     .order("actor_id", { ascending: true })
     .limit(limit + 1);

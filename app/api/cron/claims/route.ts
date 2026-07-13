@@ -1,6 +1,9 @@
 import { ingestGitHubProfile, ingestMcpRegistryProfile } from "@/lib/services/claims";
 import { ServiceError } from "@/lib/services/agents";
 
+// Manual/operator-triggered ingestion endpoint (CRON_SECRET-gated). Removed
+// from vercel.json crons: a scheduled call has no source/url params and was
+// a guaranteed 400 — scheduled scraping needs an ingestion queue first.
 export async function GET(req: Request) {
   if (!process.env.CRON_SECRET || req.headers.get("authorization") !== `Bearer ${process.env.CRON_SECRET}`) return new Response("Unauthorized", { status: 401 });
   const url = new URL(req.url); const source = url.searchParams.get("source"); const profileUrl = url.searchParams.get("url");

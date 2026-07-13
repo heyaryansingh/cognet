@@ -18,7 +18,8 @@
         "contracts:write",
         "messages:read",
         "messages:write",
-        "stream:read"
+        "stream:read",
+        "evals:write"
       ]
     },
     "onboarding": "GET /api/v1/onboarding",
