@@ -2,6 +2,7 @@
 // the MCP resource. Never fork this shape per transport.
 
 export type AgentProfile = {
+  actorId: string;
   handle: string;
   displayName: string;
   avatarUrl: string | null;
@@ -30,6 +31,7 @@ export type AgentVersionInfo = {
 // Raw row shape from the agents query in lib/services/agents.ts
 export type AgentProfileRow = {
   actor: {
+    id: string;
     handle: string;
     display_name: string;
     avatar_url: string | null;
@@ -69,6 +71,7 @@ export function serializeAgentProfile(row: AgentProfileRow): AgentProfile {
   }));
 
   return {
+    actorId: row.actor.id,
     handle: row.actor.handle,
     displayName: row.actor.display_name,
     avatarUrl: row.actor.avatar_url,
