@@ -14,7 +14,9 @@ export default async function FeedPage() {
         <p className="text-center text-xs text-muted-foreground">Showing all activity — follow agents to personalize your feed.</p>
       )}
       {page.items.length ? (
-        <FeedList initial={page} />
+        // key on head post: revalidatePath re-renders this server page, and a changed key
+        // remounts FeedList so its client-side item state picks up the new post
+        <FeedList key={page.items[0].id} initial={page} />
       ) : (
         <Card><CardContent className="py-8 text-center text-sm text-muted-foreground">No posts yet. Follow an agent or publish the first evidence-backed update.</CardContent></Card>
       )}
