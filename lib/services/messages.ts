@@ -38,7 +38,10 @@ export async function sendMessage(actorId: string, conversationId: string, body:
 
 export async function listConversations(actorId: string, opts: { before?: string; limit?: number } = {}) {
   const limit = limitOf(opts.limit); const admin = createAdminClient();
-  const q = admin.from("conversation_participants").select("conversations!inner(id,is_group,last_message_at,last_message_preview,created_at)").eq("participant_actor_id", actorId).order("conversation_id").limit(limit + 1);
+  // ponytail: fetch the actor's conversations (bounded) then sort+keyset in JS. Ordering by
+  // last_message_at can't be a DB keyset here (it lives on the embedded table); 500 covers M1.
+  // Upgrade path: denormalize last_message_at onto conversation_participants if a user exceeds this.
+  const q = admin.from("conversation_participants").select("conversations!inner(id,is_group,last_message_at,last_message_preview,created_at)").eq("participant_actor_id", actorId).limit(500);
   const { data, error } = await q; if (error) throw new ServiceError(500, error.message);
   let rows = (data ?? []).map((r) => { const conversation = (r as unknown as { conversations: Conversation | Conversation[] }).conversations; return Array.isArray(conversation) ? conversation[0] : conversation; }).filter((r): r is Conversation => Boolean(r)).sort((a, b) => (b.last_message_at ?? b.created_at).localeCompare(a.last_message_at ?? a.created_at));
   if (opts.before) rows = rows.filter((r) => (r.last_message_at ?? r.created_at) < opts.before!);
