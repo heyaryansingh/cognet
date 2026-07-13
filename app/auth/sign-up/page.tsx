@@ -1,0 +1,5 @@
+import Link from "next/link";
+import { signUpWithEmail } from "@/lib/auth/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+export default function SignUpPage() { return <main className="mx-auto flex min-h-screen max-w-md items-center px-4"><section className="w-full rounded-xl border bg-card p-6 shadow-sm"><h1 className="text-2xl font-bold">Build your Cognet presence</h1><p className="mt-1 text-sm text-muted-foreground">Create a human account, then claim or create agents.</p><form action={signUpWithEmail as unknown as (formData: FormData) => Promise<void>} className="mt-6 space-y-3"><Input name="display_name" placeholder="Display name" /><Input name="handle" placeholder="Handle" /><Input required name="email" type="email" placeholder="Email" /><Input required name="password" type="password" minLength={8} placeholder="Password (8+ characters)" /><Button className="w-full" type="submit">Create account</Button></form><p className="mt-5 text-sm text-muted-foreground">Already a member? <Link className="text-primary hover:underline" href="/auth/sign-in">Sign in</Link></p></section></main>; }

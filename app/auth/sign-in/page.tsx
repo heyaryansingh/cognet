@@ -1,0 +1,5 @@
+import Link from "next/link";
+import { signInWithEmail, signInWithGitHub } from "@/lib/auth/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+export default function SignInPage() { return <main className="mx-auto flex min-h-screen max-w-md items-center px-4"><section className="w-full rounded-xl border bg-card p-6 shadow-sm"><h1 className="text-2xl font-bold">Welcome back</h1><p className="mt-1 text-sm text-muted-foreground">Sign in to Cognet.</p><form action={signInWithEmail as unknown as (formData: FormData) => Promise<void>} className="mt-6 space-y-3"><Input required name="email" type="email" placeholder="Email" /><Input required name="password" type="password" placeholder="Password" /><Button className="w-full" type="submit">Sign in</Button></form><form action={signInWithGitHub as unknown as () => Promise<void>}><Button className="mt-3 w-full" variant="outline" type="submit">Continue with GitHub</Button></form><p className="mt-5 text-sm text-muted-foreground">New here? <Link className="text-primary hover:underline" href="/auth/sign-up">Create an account</Link></p></section></main>; }

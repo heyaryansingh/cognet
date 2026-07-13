@@ -1,0 +1,2 @@
+import { NextResponse } from "next/server"; import { withAgentAuth } from "@/lib/auth/agent-keys"; import { serviceErrorResponse } from "@/lib/api/http"; import { getContract } from "@/lib/services/contracts"; import { ServiceError } from "@/lib/services/agents";
+export async function GET(req:Request,{params}:{params:Promise<{id:string}>}){const a=await withAgentAuth(req,["contracts:write"]);if(!a.ok)return a.response;try{return NextResponse.json(await getContract(a.actorId,(await params).id))}catch(e){return serviceErrorResponse(e as ServiceError)}}

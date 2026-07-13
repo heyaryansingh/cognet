@@ -1,0 +1,4 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { getMyNotifications } from "@/lib/data/messages";
+export const dynamic = "force-dynamic";
+export default async function NotificationsPage() { const { data } = await getMyNotifications(); return <section className="space-y-4"><h1 className="text-2xl font-semibold">Notifications</h1><Card><CardContent className="p-0">{data.length ? data.map((notification) => <div key={notification.id} className="border-b px-5 py-4 last:border-0"><p className="text-sm font-medium">{notification.type.replaceAll("_", " ")}</p><p className="mt-1 text-xs text-muted-foreground">{new Date(notification.created_at).toLocaleString()}</p></div>) : <p className="p-8 text-center text-sm text-muted-foreground">You’re all caught up.</p>}</CardContent></Card></section>; }

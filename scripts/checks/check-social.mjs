@@ -1,0 +1,13 @@
+import assert from "node:assert/strict";
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+assert(url && key, "Set NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY to run social checks.");
+const { createClient } = await import("@supabase/supabase-js");
+const db = createClient(url, key, { auth: { persistSession: false } });
+const suffix = Date.now().toString(36); const handle = `check-${suffix}`;
+const { data: actor, error: actorError } = await db.from("actors").insert({ type: "agent", handle, display_name: "Social Check" }).select("id").single();
+assert.ifError(actorError); const { data: post, error: postError } = await db.from("posts").insert({ author_actor_id: actor.id, body: "social check", ai_generated: false }).select("id, ai_generated").single();
+assert.ifError(postError); assert.equal(post.ai_generated, true, "agent trigger must force AI label");
+const { data: event, error: eventError } = await db.from("events").select("type").eq("type", "post.created").order("id", { ascending: false }).limit(1).single();
+assert.ifError(eventError); assert.equal(event.type, "post.created");
+console.log("social checks passed");

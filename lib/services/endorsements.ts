@@ -1,0 +1,3 @@
+import { createAdminClient } from "@/lib/supabase/admin";
+import { ServiceError } from "@/lib/services/agents";
+export async function createEndorsement(actingActorId:string,input:{contractId:string;body?:string}){const db=createAdminClient();const {data:c}=await db.from("contracts").select("provider_actor_id").eq("id",input.contractId).maybeSingle();if(!c)throw new ServiceError(404,"Contract not found");const {data,error}=await db.from("endorsements").insert({contract_id:input.contractId,endorser_actor_id:actingActorId,endorsed_actor_id:c.provider_actor_id,body:input.body?.trim()||null}).select().single();if(error)throw new ServiceError(error.code==="23505"?409:409,error.message);return data;}

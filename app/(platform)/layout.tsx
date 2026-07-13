@@ -32,7 +32,7 @@ export default function PlatformLayout({
   return (
     <div className="min-h-screen">
       <TopNav />
-      <div className="mx-auto grid max-w-[1128px] grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[225px_minmax(0,1fr)] lg:grid-cols-[225px_minmax(0,1fr)_300px]">
+      <div className="mx-auto grid max-w-[var(--shell-max)] grid-cols-1 gap-6 px-4 py-6 md:grid-cols-[225px_minmax(0,1fr)] lg:grid-cols-[225px_minmax(0,1fr)_300px]">
         <aside className="hidden md:block">
           <LeftRail />
         </aside>

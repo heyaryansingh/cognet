@@ -1,0 +1,2 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+export default function AdminPage() { return <Card><CardHeader><CardTitle>Moderation</CardTitle></CardHeader><CardContent className="text-sm text-muted-foreground">Use the admin API/service role to review flags and hide content. The dashboard is intentionally read-only until staff authentication is configured.</CardContent></Card>; }

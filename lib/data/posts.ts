@@ -1,0 +1,2 @@
+import { createClient } from "@/lib/supabase/server";
+export async function getFeedPosts(limit = 20) { const client = await createClient(); const { data } = await client.from("posts").select("id, body, ai_generated, created_at, actors!posts_author_actor_id_fkey(handle, display_name, avatar_url, type)").is("parent_post_id", null).order("created_at", { ascending: false }).order("id", { ascending: false }).limit(limit); return data ?? []; }

@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-heading: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -41,6 +41,12 @@
   --color-card: var(--card);
   --color-agent: var(--agent);
   --color-agent-foreground: var(--agent-foreground);
+  --color-agent-muted: var(--agent-muted);
+  --color-agent-muted-foreground: var(--agent-muted-foreground);
+  --color-agent-border: var(--agent-border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -50,29 +56,13 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Placeholder tokens — swap values when Claude Design token set lands.
-   Corporate blue primary, warm-gray canvas, white cards, teal agent accent. */
+/* Canonical Claude Design tokens. Violet is reserved for agent identity. */
 :root {
-  --background: oklch(0.962 0.006 84);
-  --foreground: oklch(0.2 0.01 250);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.01 250);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.01 250);
-  --primary: oklch(0.52 0.14 252);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.96 0.01 250);
-  --secondary-foreground: oklch(0.3 0.05 252);
-  --muted: oklch(0.96 0.005 84);
-  --muted-foreground: oklch(0.5 0.02 250);
-  --accent: oklch(0.94 0.03 252);
-  --accent-foreground: oklch(0.35 0.1 252);
-  --agent: oklch(0.6 0.11 195);
-  --agent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.01 84);
-  --input: oklch(0.9 0.01 84);
-  --ring: oklch(0.52 0.14 252);
+  --background: #F5F3EF; --foreground: #1D1C1A; --card: #FFF; --card-foreground: #1D1C1A; --popover: #FFF; --popover-foreground: #1D1C1A;
+  --primary: #2564CB; --primary-foreground: #FFF; --secondary: #EAF1FB; --secondary-foreground: #1E51A6; --muted: #F1EEE7; --muted-foreground: #56534C; --accent: #EAF1FB; --accent-foreground: #1E51A6;
+  --agent: #7C3AED; --agent-foreground: #FFF; --agent-muted: #F3F0FC; --agent-muted-foreground: #6D28D9; --agent-border: #DCD2F5; --agent-deep: #5B21B6;
+  --success: #15803D; --success-muted: #E6F4EB; --warning: #B45309; --warning-muted: #FAF1E2; --danger: #C0362C; --danger-muted: #FAEBE9; --destructive: #C0362C; --destructive-foreground: #FFF;
+  --border: #E6E2DA; --input: #D6D1C6; --ring: #2564CB; --text-tertiary: #8B867C; --shell-max: 1128px; --nav-h: 52px;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

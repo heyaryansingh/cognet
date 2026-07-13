@@ -1,0 +1,7 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+const [migration, service, webhook] = await Promise.all(["supabase/migrations/20260713000006_money.sql","lib/services/payments.ts","app/api/webhooks/stripe/route.ts"].map((path) => readFile(path, "utf8")));
+for (const table of ["stripe_accounts","escrows","webhook_deliveries","promotions","subscriptions"]) assert.match(migration, new RegExp(`create table ${table}`));
+for (const name of ["createEscrow","releaseEscrow","cancelOrRefundEscrow","createConnectOnboarding","handleStripeEvent"]) assert.match(service, new RegExp(`function ${name}`));
+assert.match(webhook, /timingSafeEqual/); assert.match(service, /Idempotency-Key/);
+console.log("payments contract: ok");

@@ -1,0 +1,29 @@
+import { createAdminClient } from "@/lib/supabase/admin";
+import { decodeCursor, encodeCursor } from "@/lib/api/http";
+import { ServiceError } from "@/lib/services/agents";
+import { createEscrow } from "@/lib/services/payments";
+
+export type TaskStatus = "open" | "assigned" | "completed" | "cancelled";
+export type Page<T> = { data: T[]; nextCursor: string | null };
+export type Task = { id: string; posterActorId: string; title: string; body: string; tags: string[]; budgetMin: number | null; budgetMax: number | null; status: TaskStatus; bidCount?: number; createdAt: string };
+type TaskRow = { id:string; poster_actor_id:string; title:string; body:string; tags:string[]|null; budget_min:number|null; budget_max:number|null; status:TaskStatus; bid_count?:number; created_at:string };
+const task = (r: TaskRow): Task => ({ id:r.id, posterActorId:r.poster_actor_id, title:r.title, body:r.body, tags:r.tags ?? [], budgetMin:r.budget_min, budgetMax:r.budget_max, status:r.status, bidCount:r.bid_count, createdAt:r.created_at });
+
+export async function createTask(actingActorId: string, input: {title:string; body?:string; tags?:string[]; budgetMin?:number; budgetMax?:number; parentContractId?:string; acceptanceSpec?:Record<string,unknown>}) {
+  if (input.title.trim().length < 3 || input.title.trim().length > 200) throw new ServiceError(422,"Title must be 3–200 characters");
+  if (input.budgetMin != null && input.budgetMax != null && input.budgetMin > input.budgetMax) throw new ServiceError(422,"Minimum budget cannot exceed maximum");
+  const db=createAdminClient();
+  if (input.parentContractId) { const {data}=await db.from("contracts").select("provider_actor_id,status").eq("id",input.parentContractId).maybeSingle(); if (!data || data.provider_actor_id!==actingActorId || data.status!=="active") throw new ServiceError(403,"Only an active contract provider can subcontract"); }
+  const {data,error}=await db.from("tasks").insert({poster_actor_id:actingActorId,title:input.title.trim(),body:input.body?.trim()??"",tags:input.tags??[],budget_min:input.budgetMin??null,budget_max:input.budgetMax??null,parent_contract_id:input.parentContractId??null,acceptance_spec:input.acceptanceSpec??null}).select().single();
+  if(error) throw new ServiceError(500,error.message); return task(data);
+}
+
+export async function listTasks(filter:{status?:TaskStatus;tag?:string;cursor?:string;limit?:number}={}) : Promise<Page<Task>> {
+  const db=createAdminClient(), limit=Math.min(Math.max(filter.limit??25,1),50); let q=db.from("tasks").select("*").eq("status",filter.status??"open").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(limit+1);
+  if(filter.tag) q=q.contains("tags",[filter.tag]); const c=filter.cursor&&decodeCursor(filter.cursor); if(c) q=q.or(`created_at.lt.${c.ts},and(created_at.eq.${c.ts},id.lt.${c.id})`);
+  const {data,error}=await q; if(error) throw new ServiceError(500,error.message); const rows=(data??[]) as TaskRow[], more=rows.length>limit, page=rows.slice(0,limit),last=page.at(-1); return {data:page.map(task),nextCursor:more&&last?encodeCursor({ts:last.created_at,id:last.id}):null};
+}
+
+export async function getTask(id:string) { const db=createAdminClient(); const {data,error}=await db.from("tasks").select("*").eq("id",id).maybeSingle(); if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found"); return task(data); }
+export async function createBid(actingActorId:string,input:{taskId:string;amount:number;proposal?:string}) { const db=createAdminClient(); const {data:agent}=await db.from("agents").select("creator_actor_id").eq("actor_id",actingActorId).maybeSingle(); if(agent && !agent.creator_actor_id) throw new ServiceError(403,"Unclaimed agents cannot bid"); const {data:job}=await db.from("tasks").select("poster_actor_id,status").eq("id",input.taskId).maybeSingle(); if(!job) throw new ServiceError(404,"Task not found"); if(job.status!=="open") throw new ServiceError(409,"Task is not open"); if(job.poster_actor_id===actingActorId) throw new ServiceError(422,"Cannot bid on your own task"); const {count}=await db.from("bids").select("id",{count:"exact",head:true}).eq("bidder_actor_id",actingActorId).gte("created_at",new Date(Date.now()-86400000).toISOString()); if((count??0)>=20) throw new ServiceError(429,"Daily bid limit reached"); const {data,error}=await db.from("bids").insert({task_id:input.taskId,bidder_actor_id:actingActorId,amount:input.amount,proposal:input.proposal??""}).select().single(); if(error) throw new ServiceError(error.code==="23505"?409:500,error.code==="23505"?"Pending bid already exists":error.message); return data; }
+export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0001"?404:error.code==="42501"?403:409,error.message); if (process.env.STRIPE_SECRET_KEY) await createEscrow(actingActorId, data.id); return {contractId:data.id}; }

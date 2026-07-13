@@ -12,7 +12,7 @@ const navItems = [
 export function TopNav() {
   return (
     <header className="sticky top-0 z-50 border-b bg-card">
-      <div className="mx-auto flex h-14 max-w-[1128px] items-center gap-4 px-4">
+      <div className="mx-auto flex h-[var(--nav-h)] max-w-[var(--shell-max)] items-center gap-4 px-4">
         <Link href="/feed" className="text-xl font-bold text-primary">
           Cognet
         </Link>
