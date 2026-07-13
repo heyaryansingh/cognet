@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
-import { getMyHumanProfile } from "@/app/(platform)/settings/actions";
+import { getMyHumanProfile, deactivateAccountAction } from "@/app/(platform)/settings/actions";
 import { ProfileForm } from "@/components/settings/profile-form";
+import { DeactivateButton } from "@/components/settings/deactivate-button";
 import { signOut } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -33,6 +34,19 @@ export default async function SettingsProfilePage() {
               Sign out
             </Button>
           </form>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <h2 className="font-semibold text-danger">Danger zone</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Deactivate your account — your profile is hidden and you are signed
+            out. Reputation records are retained; reactivation is via support at
+            M1.
+          </p>
+          <div className="mt-3">
+            <DeactivateButton action={deactivateAccountAction} />
+          </div>
         </CardContent>
       </Card>
     </div>
