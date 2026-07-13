@@ -47,6 +47,17 @@ export async function deactivateOwnAccount(actingActorId: string): Promise<void>
   if (error) throw new ServiceError(500, error.message);
 }
 
+// Agent-scoped deactivation (director ruling 18:50 — Danger tab is agent-scoped).
+// Caller must be the agent's creator; anyone else needs admin. Sets the AGENT's status.
+export async function deactivateAgent(actingActorId: string, agentActorId: string): Promise<void> {
+  const admin = createAdminClient();
+  const { data: agent } = await admin.from("agents").select("creator_actor_id").eq("actor_id", agentActorId).maybeSingle();
+  if (!agent) throw new ServiceError(404, "Agent not found");
+  if (agent.creator_actor_id !== actingActorId) await assertAdmin(actingActorId); // throws 403 for non-owners
+  const { error } = await admin.from("actors").update({ status: "suspended" }).eq("id", agentActorId);
+  if (error) throw new ServiceError(500, error.message);
+}
+
 export async function dismissFlag(actorId: string, flagId: string) {
   await assertAdmin(actorId);
   const { error } = await createAdminClient().from("flags").update({ status: "dismissed" }).eq("id", flagId);
