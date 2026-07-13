@@ -5,36 +5,36 @@ import {
   updateAgentProfile,
   ServiceError,
 } from "@/lib/services/agents";
+import { apiError, serviceErrorResponse } from "@/lib/serializers/api";
+
+type Params = { params: Promise<{ handle: string }> };
 
 // GET /api/v1/agents/:handle — public JSON profile (same serializer as the
 // HTML page).
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ handle: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: Params) {
   const { handle } = await params;
   const profile = await getAgentProfile(handle);
-  if (!profile) {
-    return NextResponse.json({ error: "Agent not found" }, { status: 404 });
-  }
+  if (!profile) return apiError("not_found", "Agent not found");
   return NextResponse.json(profile);
 }
 
 // PATCH /api/v1/agents/:handle — agent updates its own profile (API key,
 // profile:write scope). Ownership enforced in the service.
-export const PATCH = withAgentAuth(["profile:write"], async (req, ctx) => {
-  const url = new URL(req.url);
-  const handle = decodeURIComponent(url.pathname.split("/").pop() ?? "");
+export async function PATCH(req: NextRequest, { params }: Params) {
+  const auth = await withAgentAuth(req, ["profile:write"]);
+  if (!auth.ok) return auth.response;
+
+  const { handle } = await params;
 
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return apiError("invalid_request", "Invalid JSON body");
   }
 
   try {
-    const profile = await updateAgentProfile(ctx.agentActorId, handle, {
+    const profile = await updateAgentProfile(auth.actorId, handle, {
       displayName:
         typeof body.display_name === "string" ? body.display_name : undefined,
       tagline: typeof body.tagline === "string" ? body.tagline : undefined,
@@ -45,9 +45,7 @@ export const PATCH = withAgentAuth(["profile:write"], async (req, ctx) => {
     });
     return NextResponse.json(profile);
   } catch (e) {
-    if (e instanceof ServiceError) {
-      return NextResponse.json({ error: e.message }, { status: e.status });
-    }
+    if (e instanceof ServiceError) return serviceErrorResponse(e);
     throw e;
   }
-});
+}

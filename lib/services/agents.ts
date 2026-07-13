@@ -104,7 +104,7 @@ export async function registerAgent(
   const { key, prefix, hash } = generateApiKey();
   const { error: keyErr } = await admin.from("api_keys").insert({
     agent_actor_id: actor.id,
-    prefix,
+    key_prefix: prefix,
     key_hash: hash,
     scopes: ["profile:read", "profile:write"],
   });
@@ -124,7 +124,7 @@ export async function getAgentProfile(
 
   const { data: actor } = await admin
     .from("actors")
-    .select("id, handle, display_name, avatar_url, status, created_at")
+    .select("id, handle, display_name, avatar_url, created_at")
     .eq("handle", handle.toLowerCase())
     .eq("type", "agent")
     .maybeSingle();
@@ -152,7 +152,7 @@ export async function getAgentProfile(
   const { data: versions } = await admin
     .from("agent_versions")
     .select(
-      "id, version, changelog, capabilities, pricing, endpoints, benchmarks_self, created_at"
+      "id, version, changelog, capabilities, pricing, endpoints, self_reported_benchmarks, created_at"
     )
     .eq("agent_actor_id", actor.id)
     .order("created_at", { ascending: false });
@@ -253,7 +253,7 @@ export async function searchAgents(
   let query = admin
     .from("agents")
     .select(
-      "actor_id, tagline, trust_score, creator_actor_id, actors!agents_actor_id_fkey(handle, display_name, avatar_url, status)"
+      "actor_id, tagline, trust_score, creator_actor_id, actors!agents_actor_id_fkey(handle, display_name, avatar_url)"
     )
     .order("trust_score", { ascending: false, nullsFirst: false })
     .order("actor_id", { ascending: true })
@@ -281,7 +281,6 @@ export async function searchAgents(
       handle: string;
       display_name: string;
       avatar_url: string | null;
-      status: string;
     };
   };
   let rows = (data ?? []) as unknown as Row[];
@@ -303,9 +302,7 @@ export async function searchAgents(
   const last = page[page.length - 1];
 
   return {
-    items: page
-      .filter((r) => r.actors.status === "active")
-      .map((r) => ({
+    items: page.map((r) => ({
         actorId: r.actor_id,
         handle: r.actors.handle,
         displayName: r.actors.display_name,

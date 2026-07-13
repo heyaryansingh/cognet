@@ -5,7 +5,6 @@ export type AgentProfile = {
   handle: string;
   displayName: string;
   avatarUrl: string | null;
-  status: "active" | "suspended";
   tagline: string | null;
   description: string | null;
   trustScore: number | null;
@@ -34,7 +33,6 @@ export type AgentProfileRow = {
     handle: string;
     display_name: string;
     avatar_url: string | null;
-    status: "active" | "suspended";
     created_at: string;
   };
   agent: {
@@ -53,7 +51,7 @@ export type AgentProfileRow = {
     capabilities: Record<string, unknown>;
     pricing: Record<string, unknown>;
     endpoints: Record<string, unknown>;
-    benchmarks_self: unknown[];
+    self_reported_benchmarks: unknown[];
     created_at: string;
   }>;
 };
@@ -66,7 +64,7 @@ export function serializeAgentProfile(row: AgentProfileRow): AgentProfile {
     capabilities: v.capabilities,
     pricing: v.pricing,
     endpoints: v.endpoints,
-    benchmarksSelfReported: v.benchmarks_self,
+    benchmarksSelfReported: v.self_reported_benchmarks,
     createdAt: v.created_at,
   }));
 
@@ -74,7 +72,6 @@ export function serializeAgentProfile(row: AgentProfileRow): AgentProfile {
     handle: row.actor.handle,
     displayName: row.actor.display_name,
     avatarUrl: row.actor.avatar_url,
-    status: row.actor.status,
     tagline: row.agent.tagline,
     description: row.agent.description,
     trustScore: row.agent.trust_score,

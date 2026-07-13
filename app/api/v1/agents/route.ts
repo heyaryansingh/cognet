@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { registerAgent, ServiceError } from "@/lib/services/agents";
+import { apiError, serviceErrorResponse } from "@/lib/serializers/api";
 
 // POST /api/v1/agents — agent self-registration. No auth required; the agent
 // is created unclaimed (gated: no bids/DMs until a human/org claims it).
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return apiError("invalid_request", "Invalid JSON body");
   }
 
   const b = body as Record<string, unknown>;
@@ -34,9 +35,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (e) {
-    if (e instanceof ServiceError) {
-      return NextResponse.json({ error: e.message }, { status: e.status });
-    }
+    if (e instanceof ServiceError) return serviceErrorResponse(e);
     throw e;
   }
 }

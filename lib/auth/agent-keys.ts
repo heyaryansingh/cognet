@@ -1,21 +1,32 @@
 import { createHash, randomBytes } from "node:crypto";
-import { NextResponse, type NextRequest } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { apiError } from "@/lib/serializers/api";
 
-// Key format: cgt_<prefix(8)><secret(32 chars base62)>. Prefix is the DB
-// lookup handle; only sha256(full key) is stored. Shown once at creation.
+// Key format (contract §3.7): cgt_<8-char prefix><32B base62>. key_prefix is
+// the DB lookup handle; only sha256(full key) is stored. Shown once.
 
 const BASE62 =
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
+// Frozen scope registry — contract amendment A3. Do not add scopes without a
+// director ruling.
 export const AGENT_SCOPES = [
   "profile:read",
   "profile:write",
   "posts:write",
+  "reviews:write",
+  "tasks:write",
   "bids:write",
+  "contracts:write",
+  "messages:read",
   "messages:write",
+  "stream:read",
 ] as const;
 export type AgentScope = (typeof AGENT_SCOPES)[number];
+
+export function isValidScope(s: string): s is AgentScope {
+  return (AGENT_SCOPES as readonly string[]).includes(s);
+}
 
 function base62(bytes: Buffer): string {
   let out = "";
@@ -38,54 +49,50 @@ export function hashApiKey(key: string): string {
   return createHash("sha256").update(key).digest("hex");
 }
 
-export type AgentAuthContext = {
-  agentActorId: string;
-  keyId: string;
-  scopes: string[];
-};
-
-export class AgentAuthError extends Error {
-  constructor(
-    public status: 401 | 403,
-    message: string
-  ) {
-    super(message);
-  }
-}
-
-// The single choke point for agent-authenticated requests. Resolves the
-// bearer key to an agent actor, checks scopes, updates last_used_at.
-// Callers get a service-role path; every service function still takes the
-// acting actorId explicitly.
-export async function authenticateAgent(
-  req: NextRequest,
-  requiredScopes: AgentScope[]
-): Promise<AgentAuthContext> {
+// FROZEN signature — contract §2. Peers import this; never redefine.
+// The single choke point for agent-authenticated requests: resolves the
+// bearer key to an agent actor, honors expires_at/revoked_at, checks scopes,
+// stamps last_used_at. Never logs the Authorization header.
+export async function withAgentAuth(
+  req: Request,
+  requiredScopes: string[]
+): Promise<
+  | { ok: true; actorId: string; keyId: string }
+  | { ok: false; response: Response }
+> {
   const authz = req.headers.get("authorization") ?? "";
   const key = authz.startsWith("Bearer ") ? authz.slice(7).trim() : "";
   if (!key.startsWith("cgt_") || key.length < 20) {
-    throw new AgentAuthError(401, "Missing or malformed API key");
+    return {
+      ok: false,
+      response: apiError("unauthorized", "Missing or malformed API key"),
+    };
   }
 
   const prefix = key.slice(4, 12);
   const admin = createAdminClient();
   const { data: row, error } = await admin
     .from("api_keys")
-    .select("id, agent_actor_id, key_hash, scopes, revoked_at, grace_expires_at")
-    .eq("prefix", prefix)
+    .select("id, agent_actor_id, key_hash, scopes, revoked_at, expires_at")
+    .eq("key_prefix", prefix)
     .maybeSingle();
 
   if (error || !row || row.key_hash !== hashApiKey(key)) {
-    throw new AgentAuthError(401, "Invalid API key");
+    return { ok: false, response: apiError("unauthorized", "Invalid API key") };
   }
   if (row.revoked_at) {
-    const grace = row.grace_expires_at && new Date(row.grace_expires_at) > new Date();
-    if (!grace) throw new AgentAuthError(401, "API key revoked");
+    return { ok: false, response: apiError("unauthorized", "API key revoked") };
+  }
+  if (row.expires_at && new Date(row.expires_at) <= new Date()) {
+    return { ok: false, response: apiError("unauthorized", "API key expired") };
   }
 
   const missing = requiredScopes.filter((s) => !row.scopes.includes(s));
   if (missing.length > 0) {
-    throw new AgentAuthError(403, `Missing scopes: ${missing.join(", ")}`);
+    return {
+      ok: false,
+      response: apiError("forbidden", `Missing scopes: ${missing.join(", ")}`),
+    };
   }
 
   // fire-and-forget audit stamp
@@ -95,24 +102,5 @@ export async function authenticateAgent(
     .eq("id", row.id)
     .then(() => {});
 
-  return { agentActorId: row.agent_actor_id, keyId: row.id, scopes: row.scopes };
-}
-
-// Route-handler wrapper: 401/403 on auth failure, otherwise runs the handler
-// with the resolved agent context.
-export function withAgentAuth(
-  requiredScopes: AgentScope[],
-  handler: (req: NextRequest, ctx: AgentAuthContext) => Promise<Response>
-) {
-  return async (req: NextRequest): Promise<Response> => {
-    try {
-      const ctx = await authenticateAgent(req, requiredScopes);
-      return await handler(req, ctx);
-    } catch (e) {
-      if (e instanceof AgentAuthError) {
-        return NextResponse.json({ error: e.message }, { status: e.status });
-      }
-      throw e;
-    }
-  };
+  return { ok: true, actorId: row.agent_actor_id, keyId: row.id };
 }
