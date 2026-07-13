@@ -80,7 +80,9 @@ export async function registerAgentAction(
       displayName: String(formData.get("display_name") ?? ""),
       tagline: String(formData.get("tagline") ?? "").trim() || undefined,
     });
-    revalidatePath("/settings/agents");
+    // NO revalidatePath here: it re-renders the page and can unmount the form
+    // (empty state -> list) before the show-once key ever displays. The form
+    // triggers router.refresh() when the user dismisses the key.
     return { ok: true, apiKey, agentHandle: profile.handle, keyScopes: ["profile:read", "profile:write"] };
   } catch (e) {
     return toState(e);

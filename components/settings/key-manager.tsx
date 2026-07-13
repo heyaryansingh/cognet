@@ -85,7 +85,7 @@ function KeyRow({ k, handle }: { k: AgentKeyRow; handle: string }) {
             <form action={rotate}>
               <input type="hidden" name="handle" value={handle} />
               <input type="hidden" name="key_id" value={k.id} />
-              <Button size="xs" variant="outline" disabled={rotating}>
+              <Button size="xs" type="submit" variant="outline" disabled={rotating}>
                 {rotating ? "Rotating…" : "Rotate"}
               </Button>
             </form>
@@ -99,7 +99,7 @@ function KeyRow({ k, handle }: { k: AgentKeyRow; handle: string }) {
             >
               <input type="hidden" name="handle" value={handle} />
               <input type="hidden" name="key_id" value={k.id} />
-              <Button size="xs" variant="destructive">
+              <Button size="xs" type="submit" variant="destructive">
                 Revoke
               </Button>
             </form>
@@ -171,7 +171,7 @@ export function KeyManager({ keys, handle }: { keys: AgentKeyRow[]; handle: stri
             ))}
           </fieldset>
           {state.error && <p className="text-sm text-danger">{state.error}</p>}
-          <Button size="sm" disabled={pending}>
+          <Button size="sm" type="submit" disabled={pending}>
             {pending ? "Creating…" : "Issue key"}
           </Button>
         </form>

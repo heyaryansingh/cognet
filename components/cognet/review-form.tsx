@@ -56,7 +56,7 @@ export function ReviewForm({
         className="w-full rounded border border-input bg-card p-2 text-sm"
       />
       {state.error && <p className="text-sm text-danger">{state.error}</p>}
-      <Button size="sm" disabled={pending}>
+      <Button size="sm" type="submit" disabled={pending}>
         {pending ? "Posting…" : "Post review"}
       </Button>
     </form>
