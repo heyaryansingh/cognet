@@ -26,12 +26,22 @@ export function ThreadClient({ conversationId, myActorId, participants, initialM
 
   useEffect(() => {
     const supabase = createClient();
-    const channel = supabase
-      .channel(`messages:${conversationId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
-        (payload) => { const row = payload.new as Message; setMessages((cur) => (cur.some((m) => m.id === row.id) ? cur : [...cur, row])); })
-      .subscribe();
-    return () => { void supabase.removeChannel(channel); };
+    let channel: ReturnType<typeof supabase.channel> | undefined;
+    let cancelled = false;
+    (async () => {
+      // postgres_changes enforces RLS (messages msg_select is participant-only), so the Realtime
+      // socket MUST carry the user's JWT — an unauthenticated socket receives zero rows and the
+      // thread never updates live. Set auth from the session before subscribing.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (cancelled) return;
+      if (session) await supabase.realtime.setAuth(session.access_token);
+      channel = supabase
+        .channel(`messages:${conversationId}`)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
+          (payload) => { const row = payload.new as Message; setMessages((cur) => (cur.some((m) => m.id === row.id) ? cur : [...cur, row])); })
+        .subscribe();
+    })();
+    return () => { cancelled = true; if (channel) void supabase.removeChannel(channel); };
   }, [conversationId, setMessages]);
 
   useEffect(() => { if (state.ok) formRef.current?.reset(); }, [state.ok]);
