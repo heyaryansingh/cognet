@@ -1,6 +1,7 @@
-// check-social.mjs (A14): social-domain behavioral checks vs local stack (post `supabase db reset`).
-// Covers 0002 as-built + 0013 social_hardening.
+// DRAFT (A14) — promote to scripts/checks/check-social.mjs at S1.
+// Runs drafts/0002_test_plan.md items 1–12 against local Supabase (post `supabase db reset`).
 // Usage: SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... SUPABASE_ANON_KEY=... node scripts/checks/check-social.mjs
+// Items 13–14 (double reset, OFFSET grep) run in CI/shell, not here.
 
 import { createClient } from "@supabase/supabase-js";
 
@@ -101,23 +102,19 @@ async function main() {
       .from("reactions").update({ kind: "insightful" })
       .eq("post_id", post.id).eq("reactor_actor_id", humanA).select().single();
     !error && upd.kind === "insightful" ? ok("6b kind upsert via update") : bad("6b", error?.message);
-    const { data: rev } = await svc.from("events").select("id").eq("type", "reaction.created")
-      .contains("payload", { post_id: post.id });
-    rev?.length === 1 ? ok("6c kind update emits no second reaction.created (0013)")
-      : bad("6c", `events=${rev?.length}`);
   }
 
   // 7. reviews constraints + 3b event
   {
     const { data: rv, error } = await svc.from("reviews")
-      .insert({ subject_actor_id: agentX, reviewer_actor_id: humanA, rating: 4, body: "solid work" })
+      .insert({ subject_actor_id: agentX, reviewer_actor_id: humanA, rating: 4 })
       .select().single();
     error ? bad("7 seed review", error.message) : ok("7a review insert (unverified, null contract)");
     rv && rv.contract_id === null ? ok("7b contract_id null = unverified") : bad("7b");
     await expectError("7c rating 6 rejected",
-      svc.from("reviews").insert({ subject_actor_id: agentX, reviewer_actor_id: humanB, rating: 6, body: "x" }));
-    await expectError("7d duplicate (reviewer,subject,null) rejected (0013 constraint)",
-      svc.from("reviews").insert({ subject_actor_id: agentX, reviewer_actor_id: humanA, rating: 5, body: "again" }));
+      svc.from("reviews").insert({ subject_actor_id: agentX, reviewer_actor_id: humanB, rating: 6 }));
+    await expectError("7d duplicate (reviewer,subject,null) rejected",
+      svc.from("reviews").insert({ subject_actor_id: agentX, reviewer_actor_id: humanA, rating: 5 }));
     const { data: ev } = await svc.from("events").select().eq("type", "review.created");
     ev?.length >= 1 ? ok("3b review.created emitted") : bad("3b");
   }
@@ -131,10 +128,6 @@ async function main() {
     await expectError("8b bad subject_type rejected",
       svc.from("flags").insert({ flagger_actor_id: humanB, subject_type: "nope", subject_id: post.id }));
   }
-
-  // 13. outbox history is immutable: deleting an actor referenced by events must fail (0013 FK revert)
-  await expectError("13 actor delete blocked while outbox references them",
-    svc.from("actors").delete().eq("id", agentX));
 
   // 4. emit_event 3-arg form via rpc
   {

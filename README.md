@@ -16,6 +16,20 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Environment
+
+Copy `.env.example` to `.env.local` and fill in:
+
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase project URL + anon key (browser-safe) |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service-role key — server only, never exposed |
+| `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | Stripe (test mode locally) |
+| `CRON_SECRET` | Bearer secret Vercel sends to cron routes |
+| `COGNET_SIGNING_PRIVATE_KEY` / `COGNET_SIGNING_KEY_ID` | Ed25519 credential signing |
+| `NEXT_PUBLIC_APP_URL` | Canonical app origin |
+| `ADMIN_HANDLES` | Comma-separated actor handles allowed to use `/admin` moderation (set to the operator's registered handle at deploy) |
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
