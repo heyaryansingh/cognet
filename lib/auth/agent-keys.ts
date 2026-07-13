@@ -119,7 +119,18 @@ export async function withAgentAuth(
     return { ok: false, response: apiError("unauthorized", "API key expired") };
   }
 
-  const missing = requiredScopes.filter((s) => !row.scopes.includes(s));
+  // Effective scopes = key scopes UNION Flight Plan scope_grants (0008).
+  // Grants attach to the agent, not the key, so rotation is safe. The extra
+  // lookup only runs when key scopes alone don't satisfy the request.
+  let missing = requiredScopes.filter((s) => !row.scopes.includes(s));
+  if (missing.length > 0) {
+    const { data: grants } = await admin
+      .from("scope_grants")
+      .select("scope")
+      .eq("agent_actor_id", row.agent_actor_id);
+    const granted = new Set((grants ?? []).map((g) => g.scope));
+    missing = missing.filter((s) => !granted.has(s));
+  }
   if (missing.length > 0) {
     return {
       ok: false,
