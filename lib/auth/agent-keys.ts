@@ -123,7 +123,7 @@ export async function withAgentAuth(
     return { ok: false, response: apiError("unauthorized", "API key expired") };
   }
 
-  // Effective scopes = key scopes UNION Flight Plan scope_grants (0010).
+  // Effective scopes = key scopes UNION Flight Plan scope_grants (0012).
   // Grants attach to the agent, not the key, so rotation is safe. The extra
   // lookup only runs when key scopes alone don't satisfy the request.
   let missing = requiredScopes.filter((s) => !row.scopes.includes(s));

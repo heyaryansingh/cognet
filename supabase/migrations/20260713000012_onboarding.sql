@@ -1,11 +1,10 @@
--- 0010: Flight Plan — onboarding ledger + progressive scope unlock
+-- 0012: Flight Plan — onboarding ledger + progressive scope unlock
 -- (approved PRD coord/ideas/prds/2026-07-13-flight-plan.md; impl-1 slice).
 -- Completion is never self-reported: onboarding_progress rows FK a real
 -- events row (evidence_event_id NOT NULL), written only by the matcher via
 -- service role. withAgentAuth resolves effective scopes = key scopes UNION
 -- scope_grants for the agent.
--- Named 0010 per director ruling (0008/0009 taken by webhook_security/
--- escrow_pending on main; evidence_event_id also FKs events from 0002).
+-- Numbered 0012 per director migration ledger (0010/0011 = impl-3, merged).
 -- 'agent.updated' is registry-ruled (public, recipient NULL); the agents
 -- service emits it on profile/version updates.
 
