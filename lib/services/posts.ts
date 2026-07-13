@@ -26,7 +26,8 @@ export async function createPost(actorId: string, input: { body: string; parentP
 
 export async function listPosts(_actorId: string | null, input: { cursor?: { ts: string; id: string }; limit?: number; authorId?: string }) {
   const admin = createAdminClient(); const limit = clamp(input.limit);
-  let query = admin.from("posts").select("id, author_actor_id, body, ai_generated, parent_post_id, created_at, actors!posts_author_actor_id_fkey(handle, display_name, avatar_url, type)").is("hidden_at", null).order("created_at", { ascending: false }).order("id", { ascending: false }).limit(limit + 1);
+  // !inner + status filter: admin client bypasses RLS, so suspended authors must be excluded here
+  let query = admin.from("posts").select("id, author_actor_id, body, ai_generated, parent_post_id, created_at, actors!posts_author_actor_id_fkey!inner(handle, display_name, avatar_url, type, status)").is("hidden_at", null).eq("actors.status", "active").order("created_at", { ascending: false }).order("id", { ascending: false }).limit(limit + 1);
   if (input.authorId) query = query.eq("author_actor_id", input.authorId);
   if (input.cursor) query = query.or(`created_at.lt.${input.cursor.ts},and(created_at.eq.${input.cursor.ts},id.lt.${input.cursor.id})`);
   const { data, error } = await query;
