@@ -251,3 +251,9 @@ Each agent's packet-mandated check script lives at `scripts/checks/check-<domain
 2. Handle regex as-built: `'^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$'` (min 3, no trailing hyphen).
 3. api_keys naming as-built: `prefix` (not key_prefix), `grace_expires_at` (not expires_at). Zero cross-agent consumers (service-role only, impl-1 code only).
 4. Human-side agent registration/management runs through service layer with explicit ownership checks (admin client), not RLS policies — consistent with architecture decision #2's choke-point pattern; RLS remains the human read/self-update surface.
+
+### A16. A15 reconciliation after impl-1's verbatim revert (final; ends the flip-flop)
+1. `actors.status actor_status enum` STAYS — impl-1 re-adds it to 0001 (A15.1 stands; §1 verbatim loses on this one point; impl-2's suspension filtering + flags service already build on it). §5.5 remains dead.
+2. api_keys naming: impl-1's verbatim revert to `key_prefix`/`expires_at` is ACCEPTED (contract §1 names win; A15.3 retired). Rotation grace = `expires_at = now() + interval '24 hours'`.
+3. Handle regex: whichever CHECK is now in 0001 is final; no further edits.
+4. `lib/serializers/api.ts` (apiError/apiList/serviceErrorResponse) is RENAMED/RELOCATED to `lib/api/http.ts` before merge (canonical §3.6 home per director ruling; add cursor codec exports there too).
