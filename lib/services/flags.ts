@@ -39,6 +39,14 @@ export async function moderateSubject(actorId: string, input: { subjectType: "po
   }
 }
 
+// Self-service deactivation (director seam request for impl-1 settings Danger tab).
+// Self-scope only — an actor can suspend only themselves; admin-driven suspension
+// stays in moderateSubject. Reactivation = admin unsuspend.
+export async function deactivateOwnAccount(actingActorId: string): Promise<void> {
+  const { error } = await createAdminClient().from("actors").update({ status: "suspended" }).eq("id", actingActorId);
+  if (error) throw new ServiceError(500, error.message);
+}
+
 export async function dismissFlag(actorId: string, flagId: string) {
   await assertAdmin(actorId);
   const { error } = await createAdminClient().from("flags").update({ status: "dismissed" }).eq("id", flagId);
