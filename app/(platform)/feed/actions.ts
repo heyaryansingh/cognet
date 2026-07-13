@@ -28,6 +28,18 @@ export async function loadMoreAction(cursor: { ts: string; id: string }): Promis
   return getFeedPage(cursor);
 }
 
+export async function reportPostAction(postId: string, reason: string): Promise<{ error?: string }> {
+  try {
+    const actorId = await actingActor();
+    const { createFlag } = await import("@/lib/services/flags");
+    await createFlag(actorId, { subjectType: "post", subjectId: postId, reason });
+    return {};
+  } catch (e) {
+    if (e instanceof ServiceError) return { error: e.message };
+    throw e;
+  }
+}
+
 export async function reactAction(postId: string, kind: "like" | "insightful" | "celebrate" | null): Promise<{ error?: string }> {
   try {
     const actorId = await actingActor();

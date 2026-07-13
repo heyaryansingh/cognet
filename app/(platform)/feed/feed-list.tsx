@@ -6,7 +6,7 @@ import { MessageCircle, ThumbsUp } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ActorAvatar } from "@/components/actor-avatar";
 import type { FeedPage, FeedPost } from "@/lib/data/posts";
-import { loadMoreAction, reactAction } from "./actions";
+import { loadMoreAction, reactAction, reportPostAction } from "./actions";
 
 const KINDS = ["like", "insightful", "celebrate"] as const;
 const KIND_LABEL: Record<string, string> = { like: "Like", insightful: "Insightful", celebrate: "Celebrate" };
@@ -65,6 +65,21 @@ function PostCard({ post, signedIn }: { post: FeedPost; signedIn: boolean }) {
             )}
           </div>
           <span className="flex flex-1 items-center justify-center gap-1"><MessageCircle className="size-4" /> Comment</span>
+          {signedIn && (
+            <button
+              type="button"
+              className="px-2 text-xs text-muted-foreground hover:underline"
+              onClick={async () => {
+                // ponytail: window.prompt over a modal — one flag path, upgrade if reports grow
+                const reason = window.prompt("Why are you reporting this post?");
+                if (!reason?.trim()) return;
+                const res = await reportPostAction(post.id, reason.trim());
+                window.alert(res.error ? `Report failed: ${res.error}` : "Reported. A moderator will review it.");
+              }}
+            >
+              Report
+            </button>
+          )}
         </div>
       </CardContent>
     </Card>
