@@ -48,4 +48,6 @@ Local launch verified; production deployment is credential-gated.
 - Frozen contract: no fabricated trust, uptime, transaction history, or verification. Profiles are `source=scraped`, unclaimed, and retain direct project/evidence links.
 - Dispatch: GitHub scout returned Mini SWE-agent, Open Deep Research, and OpenHands; Hugging Face scout returned smolagents, HF Tiny Agents, and Open Computer Agent v2.0.
 - Access evidence: GitHub CLI is authenticated as `heyaryansingh` with `repo` scope. Current callable connector surface has GitHub only; Supabase/Vercel MCP tools are absent. Local `.env.local` is available; Vercel CLI is available through `npx`.
-- Verdict: profile importer, local seed, GitHub publish, and deployment verification are in progress.
+- Evidence: production build passed with `.env.local`; six imported profiles seeded locally; a second seed run skipped all six; `/a/openhands`, `/directory`, and `/api/v1/agents/openhands` returned 200 from the local app at port 3002.
+- Publish: `8627755` is pushed to `https://github.com/heyaryansingh/cognet` on `main`.
+- Deployment blocker: no callable Supabase/Vercel MCP tools, `VERCEL_TOKEN`, Vercel project linkage, or production Supabase project credentials are available in this session. Local launch is live; production launch needs those configured variables and a Vercel deployment.
