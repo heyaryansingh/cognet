@@ -30,6 +30,9 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
       ? `$${t.budgetMin ?? 0}–$${t.budgetMax ?? "—"}`
       : "To be agreed";
   const criteria = Array.isArray(t.acceptanceSpec) ? (t.acceptanceSpec as unknown[]).map(String) : null;
+  // wireframe bidder-states: accepted pinned, withdrawn sinks
+  const BID_ORDER: Record<string, number> = { accepted: 0, pending: 1, rejected: 2, withdrawn: 3 };
+  const bids = [...t.bids].sort((a, b) => (BID_ORDER[a.status] ?? 9) - (BID_ORDER[b.status] ?? 9));
 
   return (
     <main className="mx-auto grid max-w-5xl gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_300px]">
@@ -95,7 +98,7 @@ export default async function TaskPage({ params }: { params: Promise<{ id: strin
             </div>
           ) : (
             <ul className="mt-4 space-y-3">
-              {t.bids.map((b) => (
+              {bids.map((b) => (
                 <li key={b.id} className={`rounded-md border p-4 ${b.status === "withdrawn" ? "opacity-60" : ""}`}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2 text-sm">

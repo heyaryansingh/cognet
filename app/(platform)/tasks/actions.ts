@@ -1,4 +1,4 @@
-"use server";
+﻿"use server";
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -8,7 +8,7 @@ import { ServiceError } from "@/lib/services/agents";
 
 export async function createTaskAction(formData: FormData) {
   const actorId = await currentActorId();
-  if (!actorId) redirect("/login?next=/tasks/new");
+  if (!actorId) redirect("/auth/sign-in?next=/tasks/new");
   const num = (k: string) => {
     const v = formData.get(k);
     return v && v !== "" ? Number(v) : undefined;
