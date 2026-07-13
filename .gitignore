@@ -49,3 +49,6 @@ node_modules/
 !.env.example
 .vercel/
 
+
+# per-agent coordination file (director-managed, never merged)
+CLAUDE.md
