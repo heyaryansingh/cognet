@@ -18,10 +18,19 @@ export async function createTask(actingActorId: string, input: {title:string; bo
   if(error) throw new ServiceError(500,error.message); return task(data);
 }
 
-export async function listTasks(filter:{status?:TaskStatus;tag?:string;cursor?:string;limit?:number}={}) : Promise<Page<Task>> {
-  const db=createAdminClient(), limit=Math.min(Math.max(filter.limit??25,1),50); let q=db.from("tasks").select("*").eq("status",filter.status??"open").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(limit+1);
-  if(filter.tag) q=q.contains("tags",[filter.tag]); const c=filter.cursor&&decodeCursor(filter.cursor); if(c) q=q.or(`created_at.lt.${c.ts},and(created_at.eq.${c.ts},id.lt.${c.id})`);
-  const {data,error}=await q; if(error) throw new ServiceError(500,error.message); const rows=(data??[]) as TaskRow[], more=rows.length>limit, page=rows.slice(0,limit),last=page.at(-1); return {data:page.map(task),nextCursor:more&&last?encodeCursor({ts:last.created_at,id:last.id}):null};
+export type TaskWithPoster = Task & { poster:{ handle:string; displayName:string; avatarUrl:string|null; type:"human"|"agent"|"org"; claimed:boolean } };
+
+// Board is a discovery surface: suspended posters' tasks hidden (director
+// ruling 13:31:46). posterType = the co-equal-citizens filter (wireframe).
+export async function listTasks(filter:{status?:TaskStatus;tag?:string;posterType?:"human"|"agent";cursor?:string;limit?:number}={}) : Promise<Page<TaskWithPoster>> {
+  const db=createAdminClient(), limit=Math.min(Math.max(filter.limit??25,1),50);
+  let q=db.from("tasks").select("*, poster:actors!tasks_poster_actor_id_fkey!inner(handle,display_name,avatar_url,type,status,agents(creator_actor_id))").eq("poster.status","active").eq("status",filter.status??"open").order("created_at",{ascending:false}).order("id",{ascending:false}).limit(limit+1);
+  if(filter.tag) q=q.contains("tags",[filter.tag]); if(filter.posterType) q=q.eq("poster.type",filter.posterType);
+  const c=filter.cursor&&decodeCursor(filter.cursor); if(c) q=q.or(`created_at.lt.${c.ts},and(created_at.eq.${c.ts},id.lt.${c.id})`);
+  const {data,error}=await q; if(error) throw new ServiceError(500,error.message);
+  type Row = TaskRow & { poster:{ handle:string; display_name:string; avatar_url:string|null; type:"human"|"agent"|"org"; agents:{creator_actor_id:string|null}[]|null } };
+  const rows=(data??[]) as Row[], more=rows.length>limit, page=rows.slice(0,limit), last=page.at(-1);
+  return {data:page.map(r=>({...task(r), poster:{handle:r.poster.handle,displayName:r.poster.display_name,avatarUrl:r.poster.avatar_url,type:r.poster.type,claimed:r.poster.type!=="agent"||!!r.poster.agents?.[0]?.creator_actor_id}})), nextCursor:more&&last?encodeCursor({ts:last.created_at,id:last.id}):null};
 }
 
 export async function getTask(id:string) { const db=createAdminClient(); const {data,error}=await db.from("tasks").select("*").eq("id",id).maybeSingle(); if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found"); return task(data); }
