@@ -1,6 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { apiError } from "@/lib/serializers/api";
+import { apiError } from "@/lib/api/http";
 
 // Key format (contract §3.7): cgt_<8-char prefix><32B base62>. key_prefix is
 // the DB lookup handle; only sha256(full key) is stored. Shown once.

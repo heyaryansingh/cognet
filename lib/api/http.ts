@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import type { ServiceError } from "@/lib/services/agents";
 
-// Contract §3.6: every non-2xx /api/v1 response uses this exact shape.
+// Canonical /api/v1 envelope helpers (contract §3.6) + keyset cursor codec.
+// impl-2/3/4 import from here; do not fork local copies.
+
 export type ApiErrorCode =
   | "invalid_request"
   | "unauthorized"
@@ -28,7 +30,7 @@ export function apiError(code: ApiErrorCode, message: string): NextResponse {
   );
 }
 
-// Contract §3.6: list responses are { data, next_cursor }, keyset only.
+// List responses: { data, next_cursor } — keyset pagination only, never OFFSET.
 export function apiList<T>(data: T[], nextCursor: string | null): NextResponse {
   return NextResponse.json({ data, next_cursor: nextCursor });
 }
@@ -45,4 +47,28 @@ const CODE_BY_STATUS: Record<number, ApiErrorCode> = {
 
 export function serviceErrorResponse(e: ServiceError): NextResponse {
   return apiError(CODE_BY_STATUS[e.status] ?? "internal", e.message);
+}
+
+// ------------------------------------------------------------- cursor codec
+// Canonical keyset cursor: base64url of '<ISO timestamp>|<uuid>' (H2 shape).
+// One codec for every paginated surface.
+
+export type Cursor = { ts: string; id: string };
+
+export function encodeCursor(c: Cursor): string {
+  return Buffer.from(`${c.ts}|${c.id}`, "utf8").toString("base64url");
+}
+
+export function decodeCursor(s: string): Cursor | null {
+  try {
+    const decoded = Buffer.from(s, "base64url").toString("utf8");
+    const sep = decoded.indexOf("|");
+    if (sep === -1) return null;
+    const ts = decoded.slice(0, sep);
+    const id = decoded.slice(sep + 1);
+    if (!ts || !id || Number.isNaN(Date.parse(ts))) return null;
+    return { ts, id };
+  } catch {
+    return null;
+  }
 }

@@ -5,7 +5,7 @@ import {
   updateAgentProfile,
   ServiceError,
 } from "@/lib/services/agents";
-import { apiError, serviceErrorResponse } from "@/lib/serializers/api";
+import { apiError, serviceErrorResponse } from "@/lib/api/http";
 
 type Params = { params: Promise<{ handle: string }> };
 

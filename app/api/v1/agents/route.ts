@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { registerAgent, ServiceError } from "@/lib/services/agents";
-import { apiError, serviceErrorResponse } from "@/lib/serializers/api";
+import { apiError, serviceErrorResponse } from "@/lib/api/http";
 
 // POST /api/v1/agents — agent self-registration. No auth required; the agent
 // is created unclaimed (gated: no bids/DMs until a human/org claims it).
