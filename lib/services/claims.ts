@@ -55,6 +55,49 @@ export async function createClaimToken(actingActorId: string, agentActorId: stri
   return { token: value, expiresAt: new Date(Date.now() + 24 * 3600_000).toISOString() };
 }
 
+async function unclaimedScrapedAgent(handle: string) {
+  const db = createAdminClient();
+  const { data: actor } = await db.from("actors").select("id").eq("handle", handle.toLowerCase()).eq("type", "agent").maybeSingle();
+  if (!actor) throw new ServiceError(404, "Agent not found");
+  const { data: agent } = await db.from("agents").select("actor_id,creator_actor_id,source,current_version_id").eq("actor_id", actor.id).maybeSingle();
+  if (!agent || agent.source !== "scraped" || agent.creator_actor_id) throw new ServiceError(409, "Agent is not an unclaimed scraped profile");
+  return { db, agent };
+}
+
+export async function startNamedClaim(handle: string) {
+  const { db, agent } = await unclaimedScrapedAgent(handle);
+  const value = token(); const expiresAt = new Date(Date.now() + 24 * 3600_000).toISOString();
+  const { error } = await db.from("claim_tokens").insert({ agent_actor_id: agent.actor_id, token_hash: hashSecret(value), expires_at: expiresAt });
+  if (error) throw new ServiceError(500, error.message);
+  return { proof: value, expiresAt };
+}
+
+export async function claimNamedScrapedAgent(actingActorId: string, handle: string, proof: string) {
+  if (!/^[A-Za-z0-9_-]{20,}$/.test(proof)) throw new ServiceError(422, "Invalid claim proof");
+  const { db, agent } = await unclaimedScrapedAgent(handle);
+  const { data: claim } = await db.from("claim_tokens").select("id,expires_at,claimed_at").eq("agent_actor_id", agent.actor_id).eq("token_hash", hashSecret(proof)).maybeSingle();
+  if (!claim || claim.claimed_at || new Date(claim.expires_at) <= new Date()) throw new ServiceError(404, "Claim proof not found or expired");
+  const { data: version } = await db.from("agent_versions").select("capabilities").eq("id", agent.current_version_id).maybeSingle();
+  const sourceUrl = (version?.capabilities as Record<string, unknown> | null)?.source_url;
+  if (typeof sourceUrl !== "string") throw new ServiceError(422, "Claim source unavailable");
+  const source = publicUrl(sourceUrl);
+  let proven = false;
+  try {
+    if (source.hostname === "github.com") {
+      const user = await jsonFrom(new URL(`https://api.github.com/users/${encodeURIComponent(source.pathname.split("/").filter(Boolean)[0] ?? "")}`));
+      proven = typeof user.bio === "string" && user.bio.includes(`cognet-claim:${proof}`);
+    } else {
+      const profile = await jsonFrom(source);
+      proven = profile.cognet_claim_token === proof;
+    }
+  } catch { proven = false; }
+  if (!proven) throw new ServiceError(422, "Publish cognet-claim:<proof> at the source before claiming");
+  const { error } = await db.from("agents").update({ creator_actor_id: actingActorId }).eq("actor_id", agent.actor_id).is("creator_actor_id", null);
+  if (error) throw new ServiceError(500, error.message);
+  await db.from("claim_tokens").update({ claimed_at: new Date().toISOString(), claimed_by_actor_id: actingActorId }).eq("id", claim.id);
+  return { agentActorId: agent.actor_id };
+}
+
 export async function claimAgent(actingActorId: string, value: string) {
   if (!/^[A-Za-z0-9_-]{20,}$/.test(value)) throw new ServiceError(422, "Invalid claim token");
   const db = createAdminClient();

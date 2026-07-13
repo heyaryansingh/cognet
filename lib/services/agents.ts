@@ -1,5 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
-import { generateApiKey } from "@/lib/auth/agent-keys";
+import { DEFAULT_AGENT_SCOPES, generateApiKey, isValidScope, type AgentScope } from "@/lib/auth/agent-keys";
 import {
   serializeAgentProfile,
   type AgentProfile,
@@ -106,7 +106,7 @@ export async function registerAgent(
     agent_actor_id: actor.id,
     key_prefix: prefix,
     key_hash: hash,
-    scopes: ["profile:read", "profile:write"],
+    scopes: DEFAULT_AGENT_SCOPES,
   });
   if (keyErr) {
     throw new ServiceError(500, `Failed to create key: ${keyErr.message}`);
@@ -115,6 +115,35 @@ export async function registerAgent(
   const profile = await getAgentProfile(handle);
   if (!profile) throw new ServiceError(500, "Profile readback failed");
   return { profile, apiKey: key };
+}
+
+async function ownedAgent(actingActorId: string, handle: string) {
+  const admin = createAdminClient();
+  const { data: actor } = await admin.from("actors").select("id").eq("handle", handle.toLowerCase()).eq("type", "agent").maybeSingle();
+  if (!actor) throw new ServiceError(404, "Agent not found");
+  const { data: agent } = await admin.from("agents").select("actor_id,creator_actor_id").eq("actor_id", actor.id).maybeSingle();
+  if (!agent || (actingActorId !== agent.actor_id && actingActorId !== agent.creator_actor_id)) throw new ServiceError(403, "Not your agent");
+  return { admin, agent };
+}
+
+export async function createAgentKey(actingActorId: string, handle: string, input: { name?: string; scopes?: string[] }): Promise<{ id: string; key: string; scopes: AgentScope[] }> {
+  const { admin, agent } = await ownedAgent(actingActorId, handle);
+  const scopes = input.scopes?.length ? input.scopes : DEFAULT_AGENT_SCOPES;
+  if (!scopes.every(isValidScope)) throw new ServiceError(422, "Invalid API key scope");
+  const { key, prefix, hash } = generateApiKey();
+  const { data, error } = await admin.from("api_keys").insert({ agent_actor_id: agent.actor_id, name: input.name?.trim().slice(0, 100) || "default", key_prefix: prefix, key_hash: hash, scopes }).select("id").single();
+  if (error || !data) throw new ServiceError(500, error?.message ?? "Failed to create API key");
+  return { id: data.id, key, scopes: scopes as AgentScope[] };
+}
+
+export async function rotateAgentKey(actingActorId: string, handle: string, keyId: string): Promise<{ id: string; key: string; scopes: AgentScope[]; oldKeyExpiresAt: string }> {
+  const { admin, agent } = await ownedAgent(actingActorId, handle);
+  const { data: oldKey } = await admin.from("api_keys").select("id,name,scopes,revoked_at").eq("id", keyId).eq("agent_actor_id", agent.actor_id).maybeSingle();
+  if (!oldKey || oldKey.revoked_at) throw new ServiceError(404, "API key not found");
+  const expiresAt = new Date(Date.now() + 24 * 60 * 60_000).toISOString();
+  const { error } = await admin.from("api_keys").update({ expires_at: expiresAt }).eq("id", oldKey.id);
+  if (error) throw new ServiceError(500, error.message);
+  return { ...(await createAgentKey(actingActorId, handle, { name: oldKey.name, scopes: oldKey.scopes })), oldKeyExpiresAt: expiresAt };
 }
 
 export async function getAgentProfile(

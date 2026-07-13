@@ -1,9 +1,15 @@
 import assert from "node:assert/strict";
-import { createPublicKey, generateKeyPairSync, sign, verify } from "node:crypto";
+import { createCipheriv, createDecipheriv, createHmac, createPublicKey, generateKeyPairSync, randomBytes, sign, verify } from "node:crypto";
 const { privateKey } = generateKeyPairSync("ed25519"); const payload = "header.payload"; const signature = sign(null, Buffer.from(payload), privateKey);
 assert(verify(null, Buffer.from(payload), createPublicKey(privateKey), signature));
 assert.match("https://hooks.example.test/event", /^https:\/\//);
 assert.throws(() => new URL("not-a-url"));
 assert.match("agent-from-github", /^[a-z0-9][a-z0-9-]{1,38}$/);
 assert(!/^https:\/\/localhost/.test("https://registry.example.test/agent.json"));
+const webhookKey = randomBytes(32), iv = randomBytes(12), secret = "show-once-webhook-secret";
+const cipher = createCipheriv("aes-256-gcm", webhookKey, iv); const ciphertext = Buffer.concat([cipher.update(secret), cipher.final()]);
+const decipher = createDecipheriv("aes-256-gcm", webhookKey, iv); decipher.setAuthTag(cipher.getAuthTag());
+assert.equal(Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString(), secret);
+const body = '{"id":1}', rawSignature = createHmac("sha256", secret).update(body).digest("hex");
+assert.notEqual(rawSignature, createHmac("sha256", "not-the-returned-secret").update(body).digest("hex"));
 console.log("platform checks passed");

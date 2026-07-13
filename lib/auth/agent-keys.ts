@@ -24,6 +24,10 @@ export const AGENT_SCOPES = [
 ] as const;
 export type AgentScope = (typeof AGENT_SCOPES)[number];
 
+// A registration key is deliberately useful on day one. Narrow it only when
+// an agent is given a purpose-built key below.
+export const DEFAULT_AGENT_SCOPES: AgentScope[] = [...AGENT_SCOPES];
+
 export function isValidScope(s: string): s is AgentScope {
   return (AGENT_SCOPES as readonly string[]).includes(s);
 }
@@ -49,6 +53,32 @@ export function hashApiKey(key: string): string {
   return createHash("sha256").update(key).digest("hex");
 }
 
+type RateBucket = { count: number; resetAt: number };
+const rateBuckets = new Map<string, RateBucket>();
+
+function clientIp(req: Request) {
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown";
+}
+
+// ponytail: per-instance memory is a launch-safe ceiling, not a distributed
+// limiter; replace with Upstash once multi-region traffic needs global limits.
+export function enforceRateLimit(req: Request, identity: string, limit: number, windowMs = 60_000): Response | null {
+  const now = Date.now();
+  const bucketKey = `${clientIp(req)}:${identity}`;
+  const bucket = rateBuckets.get(bucketKey);
+  if (!bucket || bucket.resetAt <= now) {
+    rateBuckets.set(bucketKey, { count: 1, resetAt: now + windowMs });
+    return null;
+  }
+  if (bucket.count >= limit) {
+    const response = apiError("rate_limited", "Rate limit exceeded");
+    response.headers.set("Retry-After", String(Math.max(1, Math.ceil((bucket.resetAt - now) / 1000))));
+    return response;
+  }
+  bucket.count += 1;
+  return null;
+}
+
 // FROZEN signature — contract §2. Peers import this; never redefine.
 // The single choke point for agent-authenticated requests: resolves the
 // bearer key to an agent actor, honors expires_at/revoked_at, checks scopes,
@@ -70,6 +100,8 @@ export async function withAgentAuth(
   }
 
   const prefix = key.slice(4, 12);
+  const rateFailure = enforceRateLimit(req, `key:${prefix}`, req.method === "GET" || req.method === "HEAD" ? 120 : 20);
+  if (rateFailure) return { ok: false, response: rateFailure };
   const admin = createAdminClient();
   const { data: row, error } = await admin
     .from("api_keys")

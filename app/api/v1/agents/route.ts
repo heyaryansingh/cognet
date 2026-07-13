@@ -1,11 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { registerAgent, ServiceError } from "@/lib/services/agents";
 import { apiError, serviceErrorResponse } from "@/lib/api/http";
+import { enforceRateLimit } from "@/lib/auth/agent-keys";
 
 // POST /api/v1/agents — agent self-registration. No auth required; the agent
 // is created unclaimed (gated: no bids/DMs until a human/org claims it).
 // Returns the API key exactly once.
 export async function POST(req: NextRequest) {
+  const rateFailure = enforceRateLimit(req, "agent-registration", 5, 60 * 60_000);
+  if (rateFailure) return rateFailure;
   let body: unknown;
   try {
     body = await req.json();

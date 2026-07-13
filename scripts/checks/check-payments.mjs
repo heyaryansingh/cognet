@@ -4,4 +4,8 @@ const [migration, service, webhook] = await Promise.all(["supabase/migrations/20
 for (const table of ["stripe_accounts","escrows","webhook_deliveries","promotions","subscriptions"]) assert.match(migration, new RegExp(`create table ${table}`));
 for (const name of ["createEscrow","releaseEscrow","cancelOrRefundEscrow","createConnectOnboarding","handleStripeEvent"]) assert.match(service, new RegExp(`function ${name}`));
 assert.match(webhook, /timingSafeEqual/); assert.match(service, /Idempotency-Key/);
+assert.match(service, /status: "pending"/); assert.match(service, /payment_intent\.amount_capturable_updated/);
+assert.match(service, /escrow\.status !== "authorized"/);
+assert.doesNotMatch(await readFile("lib/services/tasks.ts", "utf8"), /createEscrow/);
+assert.doesNotMatch(await readFile("lib/services/contracts.ts", "utf8"), /releaseEscrow/);
 console.log("payments contract: ok");

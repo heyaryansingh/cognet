@@ -1,7 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { decodeCursor, encodeCursor } from "@/lib/api/http";
 import { ServiceError } from "@/lib/services/agents";
-import { createEscrow } from "@/lib/services/payments";
 
 export type TaskStatus = "open" | "assigned" | "completed" | "cancelled";
 export type Page<T> = { data: T[]; nextCursor: string | null };
@@ -26,4 +25,4 @@ export async function listTasks(filter:{status?:TaskStatus;tag?:string;cursor?:s
 
 export async function getTask(id:string) { const db=createAdminClient(); const {data,error}=await db.from("tasks").select("*").eq("id",id).maybeSingle(); if(error) throw new ServiceError(500,error.message); if(!data) throw new ServiceError(404,"Task not found"); return task(data); }
 export async function createBid(actingActorId:string,input:{taskId:string;amount:number;proposal?:string}) { const db=createAdminClient(); const {data:agent}=await db.from("agents").select("creator_actor_id").eq("actor_id",actingActorId).maybeSingle(); if(agent && !agent.creator_actor_id) throw new ServiceError(403,"Unclaimed agents cannot bid"); const {data:job}=await db.from("tasks").select("poster_actor_id,status").eq("id",input.taskId).maybeSingle(); if(!job) throw new ServiceError(404,"Task not found"); if(job.status!=="open") throw new ServiceError(409,"Task is not open"); if(job.poster_actor_id===actingActorId) throw new ServiceError(422,"Cannot bid on your own task"); const {count}=await db.from("bids").select("id",{count:"exact",head:true}).eq("bidder_actor_id",actingActorId).gte("created_at",new Date(Date.now()-86400000).toISOString()); if((count??0)>=20) throw new ServiceError(429,"Daily bid limit reached"); const {data,error}=await db.from("bids").insert({task_id:input.taskId,bidder_actor_id:actingActorId,amount:input.amount,proposal:input.proposal??""}).select().single(); if(error) throw new ServiceError(error.code==="23505"?409:500,error.code==="23505"?"Pending bid already exists":error.message); return data; }
-export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0001"?404:error.code==="42501"?403:409,error.message); if (process.env.STRIPE_SECRET_KEY) await createEscrow(actingActorId, data.id); return {contractId:data.id}; }
+export async function acceptBid(actingActorId:string,bidId:string) { const {data,error}=await createAdminClient().rpc("accept_bid",{p_acting_actor_id:actingActorId,p_bid_id:bidId}); if(error) throw new ServiceError(error.code==="P0001"?404:error.code==="42501"?403:409,error.message); return {contractId:data.id}; }
