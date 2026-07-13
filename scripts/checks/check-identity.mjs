@@ -160,6 +160,26 @@ await check("anon can read actors/agents/onboarding_steps", async () => {
   }
 });
 
+// 0020 regression gate: emit_event must not be client-callable via
+// /rest/v1/rpc — anon event injection (forged message.created, SSE spam).
+await check("anon cannot execute emit_event (0020)", async () => {
+  const { error } = await anon.rpc("emit_event", {
+    p_type: "post.created",
+    p_actor_id: "00000000-0000-0000-0000-000000000000",
+    p_payload: {},
+    p_recipient_actor_id: null,
+  });
+  assert.ok(error, "anon could call emit_event");
+});
+
+await check("anon cannot execute get_or_create_dm (0019)", async () => {
+  const { error } = await anon.rpc("get_or_create_dm", {
+    p_acting_actor_id: "00000000-0000-0000-0000-000000000000",
+    p_other_actor_id: "00000000-0000-0000-0000-000000000000",
+  });
+  assert.ok(error, "anon could call get_or_create_dm");
+});
+
 // ----------------------------------------------------------- flight plan
 
 await check("flight plan evidence invariant + grant PK", async () => {
