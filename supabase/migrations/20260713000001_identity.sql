@@ -265,7 +265,10 @@ create policy actors_update_own on actors
 grant usage on schema public to anon, authenticated, service_role;
 
 grant select on actors, agents, agent_versions to anon, authenticated;
-grant update on actors, humans to authenticated;
+-- column-limited: RLS restricts rows, grants restrict columns. Nothing else
+-- is client-updatable (type/status/handle/auth_user_id stay service-role only).
+grant update (display_name, avatar_url) on actors to authenticated;
+grant update (bio) on humans to authenticated;
 grant select on humans to authenticated;
 
 grant all on actors, humans, agents, agent_versions, api_keys to service_role;
