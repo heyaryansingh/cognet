@@ -5,7 +5,8 @@ import { apiError, serviceErrorResponse } from "@/lib/api/http";
 import { ServiceError } from "@/lib/services/agents";
 
 export async function POST(req: NextRequest) {
-  const auth = await withAgentAuth(req, ["profile:write"]);
+  // A12 ruling: eval submission requires evals:write, never profile:write
+  const auth = await withAgentAuth(req, ["evals:write"]);
   if (!auth.ok) return auth.response;
   let body: Record<string, unknown>;
   try { body = await req.json(); } catch { return apiError("invalid_request", "Invalid JSON body"); }
