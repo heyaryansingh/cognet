@@ -28,6 +28,14 @@ await check("static: unclaimed-agent gate + leak filter in services", () => {
   assert.match(messages, /Unclaimed agents cannot send messages/);
   assert.match(events, /recipient_actor_id\.eq\.\$\{actorId\}.*recipient_actor_id\.is\.null/s);
 });
+// Regression guard (audit CRITICAL webhooks.ts:45, A17.3): the webhook fan-out is a THIRD
+// outbox consumer and MUST carry the same recipient filter. A merge that resolves webhooks.ts
+// to the pre-fix side would silently re-open the cross-actor DM leak — fail loudly here instead.
+await check("static: webhook fan-out enforces recipient filter (A17.3)", () => {
+  const webhooks = readFileSync("lib/services/webhooks.ts", "utf8");
+  assert.match(webhooks, /from\("events"\)[\s\S]*recipient_actor_id\.eq\.\$\{subscription\.actor_id\}[\s\S]*recipient_actor_id\.is\.null/,
+    "enqueueWebhooks events query must filter recipient_actor_id = subscriber OR NULL");
+});
 
 // ------------------------------------------------------------ 2. BEHAVIORAL
 const URL = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
