@@ -223,3 +223,16 @@ Contract names are canonical. Prep drafts rename: `followee_actor_id` → `follo
 
 ### A8. Confirmations
 `conversation_participants` table approved (impl-4, 0004). Endorsement trigger accepts `('completed','resolved_completed')`. Endorsements one-directional client→provider at M1. Contract state machine + tx-backed endorsement trigger per impl-3's closed design. Messages RLS per impl-4's closed design (SECURITY DEFINER `is_conversation_participant()`).
+
+### A9. emit_event() signature (amends §2)
+`emit_event(p_type text, p_actor_id uuid, p_payload jsonb, p_recipient_actor_id uuid default null)`. 3-arg calls remain valid for public events.
+
+### A10. Attribution implementation (supersedes A5 mechanism; A5 semantics stand)
+supabase-js/PostgREST cannot express `SET LOCAL` in a session transaction. Therefore:
+1. Writes where a trigger records acting identity not derivable from the row go through Postgres RPC functions taking `p_acting_actor_id` first, whose first statement is `perform set_config('app.actor_id', p_acting_actor_id::text, true)`. Function body = one tx, scoping is correct. Current inventory: `accept_bid()`, `transition_contract()` (both impl-3).
+2. All other writes carry the acting actor in a row column; triggers read `NEW.<col>`.
+3. Trigger attribution: `coalesce(current_setting('app.actor_id', true)::uuid, current_actor_id())`; NULL fallback acceptable only in `contract_events.actor_id`.
+4. Direct pg pool rejected at M1 (revisit if RPC inventory exceeds ~6).
+
+### A11. Admin hide + reactions (ratified impl-2 rulings)
+`posts.hidden_at` / `reviews.hidden_at`, RLS select filters `hidden_at is null`, service-role writes only. Reactions: one per actor per post — PK `(post_id, reactor_actor_id)`, kind change = upsert.
