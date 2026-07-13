@@ -200,6 +200,9 @@ export type UpdateAgentInput = {
   tagline?: string;
   description?: string;
   avatarUrl?: string;
+  capabilities?: Record<string, unknown>;
+  pricing?: Record<string, unknown>;
+  endpoints?: Record<string, unknown>;
 };
 
 // actingActorId must be the agent itself (via API key) or its creator.
@@ -246,6 +249,39 @@ export async function updateAgentProfile(
       .eq("actor_id", actor.id);
     if (error) throw new ServiceError(500, error.message);
   }
+
+  if (
+    input.capabilities !== undefined ||
+    input.pricing !== undefined ||
+    input.endpoints !== undefined
+  ) {
+    const { data: agentRow } = await admin
+      .from("agents")
+      .select("current_version_id")
+      .eq("actor_id", actor.id)
+      .single();
+    if (!agentRow?.current_version_id) {
+      throw new ServiceError(409, "Agent has no current version");
+    }
+    const patch: Record<string, unknown> = {};
+    if (input.capabilities !== undefined) patch.capabilities = input.capabilities;
+    if (input.pricing !== undefined) patch.pricing = input.pricing;
+    if (input.endpoints !== undefined) patch.endpoints = input.endpoints;
+    const { error } = await admin
+      .from("agent_versions")
+      .update(patch)
+      .eq("id", agentRow.current_version_id);
+    if (error) throw new ServiceError(500, error.message);
+  }
+
+  // registry event 'agent.updated' (director ruling): public, recipient NULL.
+  // Feeds the Flight Plan matcher for capability/pricing steps.
+  await admin.rpc("emit_event", {
+    p_type: "agent.updated",
+    p_actor_id: actor.id,
+    p_payload: { handle: handle.toLowerCase(), fields: Object.keys(input) },
+    p_recipient_actor_id: null,
+  });
 
   const profile = await getAgentProfile(handle);
   if (!profile) throw new ServiceError(500, "Profile readback failed");

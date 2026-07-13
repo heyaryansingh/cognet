@@ -7,8 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Consolas, monospace;
   --font-heading: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -44,9 +44,21 @@
   --color-agent-muted: var(--agent-muted);
   --color-agent-muted-foreground: var(--agent-muted-foreground);
   --color-agent-border: var(--agent-border);
+  --color-agent-deep: var(--agent-deep);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-deep: var(--primary-deep);
+  --color-cover: var(--cover);
   --color-success: var(--success);
+  --color-success-muted: var(--success-muted);
   --color-warning: var(--warning);
+  --color-warning-muted: var(--warning-muted);
   --color-danger: var(--danger);
+  --color-danger-muted: var(--danger-muted);
+  --color-star: var(--star);
+  --color-text-tertiary: var(--text-tertiary);
+  --shadow-card: var(--elevation-card);
+  --shadow-raised: var(--elevation-raised);
+  --shadow-overlay: var(--elevation-overlay);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -56,13 +68,53 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Canonical Claude Design tokens. Violet is reserved for agent identity. */
+/* Cognet design tokens v1 (Claude Design) — docs/design/tokens.css, verbatim.
+   Binding rule: violet (--agent family) is exclusively agent-identity. */
 :root {
-  --background: #F5F3EF; --foreground: #1D1C1A; --card: #FFF; --card-foreground: #1D1C1A; --popover: #FFF; --popover-foreground: #1D1C1A;
-  --primary: #2564CB; --primary-foreground: #FFF; --secondary: #EAF1FB; --secondary-foreground: #1E51A6; --muted: #F1EEE7; --muted-foreground: #56534C; --accent: #EAF1FB; --accent-foreground: #1E51A6;
-  --agent: #7C3AED; --agent-foreground: #FFF; --agent-muted: #F3F0FC; --agent-muted-foreground: #6D28D9; --agent-border: #DCD2F5; --agent-deep: #5B21B6;
-  --success: #15803D; --success-muted: #E6F4EB; --warning: #B45309; --warning-muted: #FAF1E2; --danger: #C0362C; --danger-muted: #FAEBE9; --destructive: #C0362C; --destructive-foreground: #FFF;
-  --border: #E6E2DA; --input: #D6D1C6; --ring: #2564CB; --text-tertiary: #8B867C; --shell-max: 1128px; --nav-h: 52px;
+  --background: #F5F3EF;
+  --foreground: #1D1C1A;
+  --card: #FFFFFF;
+  --card-foreground: #1D1C1A;
+  --popover: #FFFFFF;
+  --popover-foreground: #1D1C1A;
+  --primary: #2564CB;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EAF1FB;
+  --secondary-foreground: #1E51A6;
+  --muted: #F1EEE7;
+  --muted-foreground: #56534C;
+  --accent: #EAF1FB;
+  --accent-foreground: #1E51A6;
+  --destructive: #C0362C;
+  --destructive-foreground: #FFFFFF;
+  --border: #E6E2DA;
+  --input: #D6D1C6;
+  --ring: #2564CB;
+
+  --agent: #7C3AED;
+  --agent-foreground: #FFFFFF;
+  --agent-muted: #F3F0FC;
+  --agent-muted-foreground: #6D28D9;
+  --agent-border: #DCD2F5;
+  --agent-deep: #5B21B6;
+
+  --primary-hover: #1E51A6;
+  --primary-deep: #173D7A;
+  --cover: #24406B;
+
+  --success: #15803D;  --success-muted: #E6F4EB;
+  --warning: #B45309;  --warning-muted: #FAF1E2;
+  --danger:  #C0362C;  --danger-muted:  #FAEBE9;
+  --star: #E8A33D;
+
+  --text-tertiary: #8B867C;
+
+  --elevation-card: 0 1px 2px rgba(27, 25, 20, 0.06);
+  --elevation-raised: 0 2px 6px rgba(27, 25, 20, 0.08), 0 1px 2px rgba(27, 25, 20, 0.06);
+  --elevation-overlay: 0 4px 12px rgba(27, 25, 20, 0.14), 0 16px 40px rgba(27, 25, 20, 0.14);
+
+  --shell-max: 1128px;
+  --nav-h: 52px;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);

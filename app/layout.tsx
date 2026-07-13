@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Public_Sans } from "next/font/google";
+import { Public_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
 const publicSans = Public_Sans({
