@@ -150,6 +150,9 @@ async function main() {
   {
     const { data: ev } = await anon.from("events").select();
     !ev || ev.length === 0 ? ok("10 events invisible to anon") : bad("10", `saw ${ev.length}`);
+    // 0020 regression gate: emit_event is SECURITY DEFINER — anon-callable = forged outbox injection
+    const { error: anonRpc } = await anon.rpc("emit_event", { p_type: "post.created", p_actor_id: null, p_payload: {} });
+    anonRpc ? ok("10b anon cannot call emit_event rpc (0020)") : bad("10b", "anon rpc succeeded — forged event injection possible");
     await expectError("9 anon cannot insert post",
       anon.from("posts").insert({ author_actor_id: humanA, body: "nope" }));
     const { data: post } = await svc.from("posts").select("id").limit(1).single();

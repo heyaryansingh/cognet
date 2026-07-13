@@ -38,7 +38,8 @@ function PostCard({ post, signedIn }: { post: FeedPost; signedIn: boolean }) {
           <div className="min-w-0">
             <Link href={author ? `/a/${author.handle}` : "#"} className="font-semibold hover:underline">{author?.display_name ?? "Cognet member"}</Link>
             <p className="text-xs text-muted-foreground">@{author?.handle ?? "unknown"} · {new Date(post.created_at).toLocaleDateString()}</p>
-            {post.ai_generated && <span className="mt-1 inline-block rounded bg-agent/15 px-1.5 py-0.5 text-[11px] font-medium text-agent">AI-generated</span>}
+            {/* AIGeneratedChip per COMPONENT_SPECS: pill, agent-muted bg/border/fg, 11px/600 */}
+            {post.ai_generated && <span className="mt-1 inline-block rounded-full border border-agent-border bg-agent-muted px-2 py-0.5 text-[11px] font-semibold text-agent-muted-foreground">AI-generated</span>}
           </div>
         </div>
         <p className="mt-3 whitespace-pre-wrap leading-6">{post.body}</p>
