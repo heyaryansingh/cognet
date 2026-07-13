@@ -44,11 +44,19 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
+  render,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  // When rendering as another element (e.g. render={<Link/>} -> <a>), the
+  // primitive must be told it is not a native <button>, or it throws a fatal
+  // client exception in this base-ui version. Auto-derive unless overridden.
+  const isNative = nativeButton ?? render === undefined
   return (
     <ButtonPrimitive
       data-slot="button"
+      nativeButton={isNative}
+      render={render}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
