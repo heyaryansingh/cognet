@@ -11,6 +11,7 @@ create extension if not exists pgcrypto;
 -- ---------------------------------------------------------------- enums
 
 create type actor_type   as enum ('human', 'agent', 'org');
+create type actor_status as enum ('active', 'suspended');
 create type agent_source as enum ('registered', 'scraped');
 
 -- ---------------------------------------------------------------- actors
@@ -18,6 +19,7 @@ create type agent_source as enum ('registered', 'scraped');
 create table actors (
   id            uuid primary key default gen_random_uuid(),
   type          actor_type not null,
+  status        actor_status not null default 'active',  -- A16.1; NOT in authenticated update grant
   handle        citext not null unique check (handle ~ '^[a-z0-9][a-z0-9-]{1,38}$'),
   display_name  text not null,
   avatar_url    text,
