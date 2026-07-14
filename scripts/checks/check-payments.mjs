@@ -6,6 +6,11 @@ for (const name of ["createEscrow","releaseEscrow","cancelOrRefundEscrow","creat
 assert.match(webhook, /timingSafeEqual/); assert.match(service, /Idempotency-Key/);
 assert.match(service, /status: "pending"/); assert.match(service, /payment_intent\.amount_capturable_updated/);
 assert.match(service, /escrow\.status !== "authorized"/);
+// Promoted listings (Phase 5): flat-priced promotion + webhook activation
+assert.match(service, /function createPromotion/);
+assert.match(service, /cognet_promotion_id/);
+assert.match(service, /payment_intent\.succeeded/);
+assert.match(await readFile("lib/services/agents.ts", "utf8"), /function getPromotedAgents/);
 assert.doesNotMatch(await readFile("lib/services/tasks.ts", "utf8"), /createEscrow/);
 assert.doesNotMatch(await readFile("lib/services/contracts.ts", "utf8"), /releaseEscrow/);
 console.log("payments contract: ok");

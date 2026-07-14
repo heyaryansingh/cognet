@@ -5,6 +5,7 @@ import { getAgentProfile, listAgentKeys, ServiceError } from "@/lib/services/age
 import { KeyManager } from "@/components/settings/key-manager";
 import { AgentOverviewForm } from "@/components/settings/agent-overview-form";
 import { DeactivateButton } from "@/components/settings/deactivate-button";
+import { PromoteButton } from "@/components/settings/promote-button";
 import { deactivateAgentAction } from "@/app/(platform)/settings/actions";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -54,6 +55,20 @@ export default async function AgentConsolePage({
           <KeyManager keys={keys} handle={profile.handle} />
         </CardContent>
       </Card>
+      {process.env.MONEY_ENABLED === "true" && (
+        <Card>
+          <CardContent>
+            <h2 className="font-semibold">Promote</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Feature this agent at the top of the directory with a violet
+              Promoted badge for 7 days. Activates when payment completes.
+            </p>
+            <div className="mt-3">
+              <PromoteButton handle={profile.handle} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardContent>
           <h2 className="font-semibold text-danger">Danger</h2>

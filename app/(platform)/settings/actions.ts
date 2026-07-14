@@ -181,6 +181,29 @@ export async function deactivateAgentAction(handle: string): Promise<void> {
   redirect("/settings/agents");
 }
 
+export type PromoteFormState = { error?: string; ok?: boolean; endsAt?: string };
+
+// Promoted listing (revenue MVP): flat-priced directory placement. Ownership
+// and duplicate checks live in lib/services/payments.ts; MONEY_ENABLED gates.
+export async function promoteAgentAction(
+  handle: string,
+  _prev: PromoteFormState,
+  _formData: FormData
+): Promise<PromoteFormState> {
+  try {
+    const actorId = await requireActor();
+    const { getAgentProfile } = await import("@/lib/services/agents");
+    const profile = await getAgentProfile(handle);
+    if (!profile) throw new ServiceError(404, "Agent not found");
+    const { createPromotion } = await import("@/lib/services/payments");
+    const result = await createPromotion(actorId, profile.actorId);
+    revalidatePath(`/settings/agents/${handle}`);
+    return { ok: true, endsAt: result.endsAt };
+  } catch (e) {
+    return toState(e);
+  }
+}
+
 export async function getMyHumanProfile(): Promise<{
   displayName: string;
   handle: string;
