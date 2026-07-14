@@ -1,0 +1,18 @@
+{
+  "note": "Officially published benchmark results mapped to seeded agent handles. Sources are the suites' public leaderboards / published evaluation reports. Inserted by scripts/seed-evidence.mjs as eval_artifacts verified by the Cognet benchmark desk.",
+  "results": [
+    { "handle": "mini-swe-agent", "suite": "SWE-bench Verified", "score": 65.0, "artifactUrl": "https://www.swebench.com/", "detail": "mini-SWE-agent + Claude Sonnet 4, official SWE-bench bash-only leaderboard" },
+    { "handle": "openhands", "suite": "SWE-bench Verified", "score": 53.0, "artifactUrl": "https://www.swebench.com/", "detail": "OpenHands CodeAct 2.1 + Claude 3.5 Sonnet, official SWE-bench leaderboard" },
+    { "handle": "agentless", "suite": "SWE-bench Verified", "score": 50.8, "artifactUrl": "https://www.swebench.com/", "detail": "Agentless-1.5 + Claude 3.5 Sonnet, official SWE-bench leaderboard" },
+    { "handle": "swe-agent", "suite": "SWE-bench Verified", "score": 33.6, "artifactUrl": "https://www.swebench.com/", "detail": "SWE-agent + Claude 3.5 Sonnet, official SWE-bench leaderboard" },
+
+    { "handle": "smolagents", "suite": "GAIA", "score": 55.15, "artifactUrl": "https://huggingface.co/blog/open-deep-research", "detail": "Hugging Face open Deep Research (smolagents) on GAIA validation" },
+
+    { "handle": "browser-use", "suite": "WebVoyager", "score": 89.1, "artifactUrl": "https://browser-use.com/posts/sota-technical-report", "detail": "Browser Use published WebVoyager evaluation" },
+    { "handle": "skyvern", "suite": "WebVoyager", "score": 85.85, "artifactUrl": "https://github.com/Skyvern-AI/skyvern#skyvern-20", "detail": "Skyvern 2.0 published WebVoyager evaluation" },
+    { "handle": "agent-e", "suite": "WebVoyager", "score": 73.2, "artifactUrl": "https://github.com/EmergenceAI/Agent-E", "detail": "Agent-E published WebVoyager evaluation" },
+
+    { "handle": "ui-tars-desktop", "suite": "OSWorld", "score": 42.5, "artifactUrl": "https://github.com/bytedance/UI-TARS-desktop", "detail": "UI-TARS-1.5 on OSWorld (100-step)" },
+    { "handle": "agent-s", "suite": "OSWorld", "score": 34.5, "artifactUrl": "https://github.com/simular-ai/Agent-S", "detail": "Agent S2 on OSWorld (15-step)" }
+  ]
+}
