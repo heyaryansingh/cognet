@@ -75,7 +75,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 47391,
+      "github_stars": 47392,
       "language": "Python",
       "topics": "anthropic, chatgpt, claude-3, cli, command-line, gemini, gpt-3, gpt-35-turbo"
     },
@@ -126,7 +126,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 51210,
+      "github_stars": 51214,
       "language": "Rust",
       "topics": "acp, ai, ai-agents, mcp"
     },
@@ -152,7 +152,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 64656,
+      "github_stars": 64658,
       "language": "TypeScript"
     },
     "pricing": {
@@ -177,7 +177,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 34873,
+      "github_stars": 34875,
       "language": "TypeScript",
       "topics": "agent, ai, cli, developer-tools, open-source"
     },
@@ -229,7 +229,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 98049,
+      "github_stars": 98050,
       "language": "Rust"
     },
     "pricing": {
@@ -254,7 +254,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 105985,
+      "github_stars": 105987,
       "language": "TypeScript",
       "topics": "ai, ai-agents, cli, gemini, gemini-api, mcp-client, mcp-server"
     },
@@ -332,7 +332,7 @@
     "capabilities": {
       "primary": "Coding agent",
       "category": "coding",
-      "github_stars": 26020,
+      "github_stars": 26021,
       "language": "TypeScript"
     },
     "pricing": {
@@ -357,7 +357,7 @@
     "capabilities": {
       "primary": "Browser automation agent",
       "category": "browser",
-      "github_stars": 104749,
+      "github_stars": 104757,
       "language": "Python",
       "topics": "ai-agents, ai-tools, browser-automation, browser-use, llm, playwright, python"
     },
@@ -390,7 +390,7 @@
     "capabilities": {
       "primary": "Browser automation agent",
       "category": "browser",
-      "github_stars": 22225,
+      "github_stars": 22226,
       "language": "Python",
       "topics": "ai, api, automation, browser, browser-automation, computer, gpt, llm"
     },
@@ -586,7 +586,7 @@
     "capabilities": {
       "primary": "Browser automation agent",
       "category": "browser",
-      "github_stars": 23506,
+      "github_stars": 23508,
       "language": "TypeScript",
       "topics": "agents, ai, llms, playwright, puppeteer, selenium"
     },
@@ -715,7 +715,7 @@
     "capabilities": {
       "primary": "Browser automation agent",
       "category": "browser",
-      "github_stars": 7334,
+      "github_stars": 7335,
       "language": "TypeScript",
       "topics": "ai, ai-agents, ai-tools, browser-automation, llm"
     },
@@ -818,7 +818,7 @@
     "capabilities": {
       "primary": "Research agent",
       "category": "research",
-      "github_stars": 8866,
+      "github_stars": 8867,
       "language": "Python",
       "topics": "ai, rag, science, search"
     },
@@ -844,7 +844,7 @@
     "capabilities": {
       "primary": "Research agent",
       "category": "research",
-      "github_stars": 19352,
+      "github_stars": 19353,
       "language": "TypeScript",
       "topics": "agent, ai, gpt, o3-mini, research"
     },
@@ -922,7 +922,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 55527,
+      "github_stars": 55531,
       "language": "Python",
       "topics": "agents, ai, ai-agents, aiagentframework, llms"
     },
@@ -948,7 +948,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 69374,
+      "github_stars": 69375,
       "language": "Python",
       "topics": "agent, gpt, llm, metagpt, multi-agent"
     },
@@ -1001,7 +1001,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 37298,
+      "github_stars": 37300,
       "language": "Python",
       "topics": "agents, ai, ai-agents, chatgpt, deepagents, enterprise, framework, gemini"
     },
@@ -1078,7 +1078,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 21796,
+      "github_stars": 21797,
       "language": "Python"
     },
     "pricing": {
@@ -1096,8 +1096,8 @@
   {
     "handle": "agno",
     "displayName": "agno",
-    "tagline": "Build, run, and manage your own agent platform — open-source multi-agent framework.",
-    "description": "Agno is a framework and runtime for building agent platforms: build agents, run them as a service, and manage your platform using a web UI.\n\n- Build your agent platform using the Agno SDK. - Run your agent platform using the AgentOS runtime. - Manage everything using the AgentOS UI.\n\nAgno allows you to own your agent stack. Maintain control of your data, context, tools, permissions, memory and human-review loops. Run your platform in your own cloud, and manage it using a beautiful web UI.\n\nHand this prompt to your coding agent (Claude Code, Cursor, Codex):\n\nYour coding agent will set up your agent platform and run it locally using Docker, giving you a REST API for serving your agents, a Postgres database for storing your data and traces, an MCP server, and a control plane at os.agno.com.\n\nDeploying somewhere else? Use the same prompt but point it to a different repo. The starter templates are identical except for the deploy scripts: swap agentos-railway for agentos-docker, agentos-aws, agentos-gcp, agentos-azure, agentos-fly, agentos-render, agentos-modal, or agentos-helm.\n\n- Build your first agent in 20 lines of code. - Build your own agent platform. - Read the docs.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "tagline": "Build, run, and manage agent platforms — open-source multi-agent framework.",
+    "description": "Agno is a framework and runtime for agent platforms. Build agents, run them as a service, manage your platform using a web UI.\n\n- Build your agent platform using the Agno SDK. - Run your agent platform using the AgentOS runtime. - Manage everything using the AgentOS UI.\n\nAgno allows you to own your agent stack. Maintain control of your data, memory, and security posture (JWT-based RBAC), and turn your agent platform into a learning loop with simulations and usage data.\n\nHand this prompt to your coding agent (Claude Code, Cursor, Codex):\n\nYour coding agent will set up your agent platform and run it locally using Docker, giving you a REST API for serving your agents, a Postgres database for storing your data and traces, an MCP server, and a control plane.\n\nDeploying somewhere else? Use the same prompt but point it to a different repo. The starter templates are identical except for the deploy scripts: swap agentos-railway for agentos-docker, agentos-aws, agentos-gcp, agentos-azure, agentos-fly, agentos-render, agentos-modal, or agentos-helm.\n\n- Build your first agent in 20 lines of code. - Build your own agent platform. - Read the docs.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
     "avatarUrl": "https://github.com/agno-agi.png",
     "sourceUrl": "https://github.com/agno-agi/agno",
     "capabilities": {
@@ -1129,7 +1129,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 18526,
+      "github_stars": 18529,
       "language": "Python",
       "topics": "agent-framework, genai, llm, pydantic, python"
     },
@@ -1233,7 +1233,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 20611,
+      "github_stars": 20613,
       "language": "Python",
       "topics": "agent, agentic, agentic-ai, agents, agents-sdk, ai, ai-agents, aiagentframework"
     },
@@ -1259,7 +1259,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 27909,
+      "github_stars": 27910,
       "language": "Python",
       "topics": "agents, ai, framework, harness, llm, openai, python"
     },
@@ -1285,7 +1285,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 23793,
+      "github_stars": 23794,
       "language": "Python",
       "topics": "ai, ai-agents, llm, llm-agent"
     },
@@ -1311,7 +1311,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 18744,
+      "github_stars": 18745,
       "language": "TypeScript",
       "topics": "agent, agentic, ai, autonomous, chatbot, crypto, discord, eliza"
     },
@@ -1389,7 +1389,7 @@
     "capabilities": {
       "primary": "Multi-agent framework",
       "category": "multi-agent",
-      "github_stars": 16729,
+      "github_stars": 16730,
       "language": "Python"
     },
     "pricing": {
@@ -1467,7 +1467,7 @@
     "capabilities": {
       "primary": "Voice agent",
       "category": "voice",
-      "github_stars": 11361,
+      "github_stars": 11362,
       "language": "Python",
       "topics": "agents, ai, openai, real-time, video, voice"
     },
@@ -1570,7 +1570,7 @@
     "capabilities": {
       "primary": "RAG knowledge agent",
       "category": "rag",
-      "github_stars": 85040,
+      "github_stars": 85041,
       "language": "Go",
       "topics": "agentic-ai, agentic-retrieval, agentic-search, ai, ai-agents, context-engine, context-management, llm-apps"
     },
@@ -1648,7 +1648,7 @@
     "capabilities": {
       "primary": "RAG knowledge agent",
       "category": "rag",
-      "github_stars": 63294,
+      "github_stars": 63296,
       "language": "JavaScript",
       "topics": "agent-computer, agent-harness, agent-orchestration, agentic-ai, ai-agents, computer-use, hermes-agent, llm"
     },
@@ -1751,7 +1751,7 @@
     "capabilities": {
       "primary": "RAG knowledge agent",
       "category": "rag",
-      "github_stars": 50847,
+      "github_stars": 50849,
       "language": "Python",
       "topics": "agents, application, data, fine-tuning, framework, llamaindex, llm, multi-agents"
     },
@@ -1829,7 +1829,7 @@
     "capabilities": {
       "primary": "Data analysis agent",
       "category": "data",
-      "github_stars": 28368,
+      "github_stars": 28372,
       "language": "Python",
       "topics": "ai-crawler, ai-scraping, ai-search, crawler, data-extraction, firecrawl-alternative, large-language-model, llm"
     },
@@ -1855,7 +1855,7 @@
     "capabilities": {
       "primary": "Data analysis agent",
       "category": "data",
-      "github_stars": 72620,
+      "github_stars": 72633,
       "language": "Python"
     },
     "pricing": {
@@ -1932,7 +1932,7 @@
     "capabilities": {
       "primary": "DevOps agent",
       "category": "devops",
-      "github_stars": 2850,
+      "github_stars": 2851,
       "language": "Python",
       "topics": "aiops, chatbot, chatops, devops, devops-tools, incident, incident-management, incident-response"
     },
@@ -2010,7 +2010,7 @@
     "capabilities": {
       "primary": "DevOps agent",
       "category": "devops",
-      "github_stars": 3301,
+      "github_stars": 3302,
       "language": "Go",
       "topics": "agents, ai, cncf, devops, mcp"
     },
@@ -2062,7 +2062,7 @@
     "capabilities": {
       "primary": "Automation agent",
       "category": "automation",
-      "github_stars": 64986,
+      "github_stars": 64994,
       "language": "Rust",
       "topics": "acp, coding-agent, deepseek, kimi, qwen, rust"
     },
@@ -2425,7 +2425,7 @@
     "capabilities": {
       "primary": "Security and evaluation agent",
       "category": "security",
-      "github_stars": 23263,
+      "github_stars": 23264,
       "language": "TypeScript",
       "topics": "ci, ci-cd, cicd, evaluation, evaluation-framework, llm, llm-eval, llm-evaluation"
     },
@@ -2632,7 +2632,7 @@
     "capabilities": {
       "primary": "Automation agent",
       "category": "automation",
-      "github_stars": 60829,
+      "github_stars": 60830,
       "language": "TypeScript",
       "topics": "agents, ai, ai-agents, application, chatbots, chatgpt, genai, llm"
     },
@@ -2736,7 +2736,7 @@
     "capabilities": {
       "primary": "RAG knowledge agent",
       "category": "rag",
-      "github_stars": 34425,
+      "github_stars": 34426,
       "language": "Python",
       "topics": "gpt, gpt-4, gpt4, graphrag, llm, llms, rag"
     },
@@ -2748,6 +2748,471 @@
     "endpoints": {
       "repository": "https://github.com/microsoft/graphrag",
       "documentation": "https://microsoft.github.io/graphrag/"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "ai-hedge-fund",
+    "displayName": "ai-hedge-fund",
+    "tagline": "An AI Hedge Fund Team — open-source data analysis agent.",
+    "description": "This is a proof of concept for an AI-powered hedge fund. The goal of this project is to explore the use of AI to make trading decisions. This project is for educational purposes only and is not intended for real trading or investment.\n\n🚧 The project is evolving. We're rebuilding it into a persistent, always-on AI hedge fund — a fund as a first-class entity you can backtest, paper-trade, and (opt-in) run live, with the investor agents reimagined as pluggable, backtestable \"alpha models.\" Read the Vision → and the Roadmap →.\n\n- Not intended for real trading or investment - No investment advice or guarantees provided - Creator assumes no liability for financial losses - Consult a financial advisor for investment decisions - Past performance does not indicate future results\n\nBy using this software, you agree to use it solely for learning purposes.\n\n- How to Install - How to Run - ⌨️ Command Line Interface - 🖥️ Web Application - How to Contribute - Feature Requests - License\n\nBefore you can run the AI Hedge Fund, you'll need to install it and set up your API keys. These steps are common to both the full-stack web application and command line interface.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/virattt.png",
+    "sourceUrl": "https://github.com/virattt/ai-hedge-fund",
+    "capabilities": {
+      "primary": "Data analysis agent",
+      "category": "data",
+      "github_stars": 61847,
+      "language": "Python"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/virattt/ai-hedge-fund",
+      "documentation": "https://github.com/virattt/ai-hedge-fund#readme"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "fingpt",
+    "displayName": "FinGPT",
+    "tagline": "FinGPT: Open-Source Financial Large Language Models!  Revolutionize 🔥    We release the trained model on HuggingFace — open-source data analysis agent.",
+    "description": "Let us not expect Wall Street to open-source LLMs or open APIs, due to FinTech institutes' internal regulations and policies.\n\nFinGPT is an open-source financial large language model project developed and maintained by the AI4Finance Foundation.\n\n- Hongyang (Bruce) Yang – research and development on financial large language models and related applications - [other contributors…]\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/AI4Finance-Foundation.png",
+    "sourceUrl": "https://github.com/AI4Finance-Foundation/FinGPT",
+    "capabilities": {
+      "primary": "Data analysis agent",
+      "category": "data",
+      "github_stars": 20877,
+      "language": "Jupyter Notebook",
+      "topics": "chatgpt, finance, fingpt, fintech, large-language-models, machine-learning, nlp, prompt-engineering"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/AI4Finance-Foundation/FinGPT",
+      "documentation": "https://fingpt.io"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "finrobot",
+    "displayName": "FinRobot",
+    "tagline": "FinRobot: An Open-Source AI Agent Platform for Financial Analysis using LLMs 🚀 🚀 🚀 — open-source data analysis agent.",
+    "description": "FinRobot is an AI Agent platform tailored for financial applications, surpassing FinGPT's single-model approach. It unifies multiple AI technologies—including LLMs, reinforcement learning, and quantitative analytics—to power investment research automation, algorithmic trading strategies, and risk assessment, delivering a full-stack intelligent solution for the financial industry.\n\nConcept of AI Agent: an AI Agent is an intelligent entity that uses large language models as its brain to perceive its environment, make decisions, and execute actions. Unlike traditional artificial intelligence, AI Agents possess the ability to independently think and utilize tools to progressively achieve given objectives.\n\nWe are excited to announce the first public release of FinRobot Desktop v0.1.0 — a native desktop equity research cockpit powered by a production-grade multi-agent architecture.\n\nFinRobot Desktop brings AI-native financial research workflows into a macOS application, helping analysts move from market data and company filings to valuation, debate, synthesis, and investment committee-style reports in one traceable workflow.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/AI4Finance-Foundation.png",
+    "sourceUrl": "https://github.com/AI4Finance-Foundation/FinRobot",
+    "capabilities": {
+      "primary": "Data analysis agent",
+      "category": "data",
+      "github_stars": 7562,
+      "language": "Jupyter Notebook",
+      "topics": "aiagent, chatgpt, finance, fingpt, large-language-models, multimodal-deep-learning, prompt-engineering, robo-advisor"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/AI4Finance-Foundation/FinRobot",
+      "documentation": "https://finrobot.ai"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "tradingagents",
+    "displayName": "TradingAgents",
+    "tagline": "TradingAgents: Multi-Agents LLM Financial Trading Framework — open-source data analysis agent.",
+    "description": "Deutsch | Español | français | 日本語 | 한국어 | Português | Русский | 中文\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/TauricResearch.png",
+    "sourceUrl": "https://github.com/TauricResearch/TradingAgents",
+    "capabilities": {
+      "primary": "Data analysis agent",
+      "category": "data",
+      "github_stars": 92991,
+      "language": "Python",
+      "topics": "agent, finance, llm, multiagent, trading"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/TauricResearch/TradingAgents",
+      "documentation": "https://arxiv.org/pdf/2412.20138"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "gpt-migrate",
+    "displayName": "gpt-migrate",
+    "tagline": "Easily migrate your codebase from one framework or language to another — open-source coding agent.",
+    "description": "Easily migrate your codebase from one framework or language to another.\n\nIf you've ever faced the pain of migrating a codebase to a new framework or language, this project is for you.\n\nMigration is a costly, tedious, and non-trivial problem. Do not trust the current version blindly and please use responsibly. Please also be aware that costs can add up quickly as GPT-Migrate is designed to write (and potentially re-write) the entirety of a codebase.\n\nHowever, with the collective brilliance of the OSS community and the current state of LLMs, it is also a very tractable problem.\n\nThis will create a virtual environment and install all the necessary dependencies in that environment.\n\nexport OPENROUTERAPIKEY= export OPENAIAPIKEY= pip install -r requirements.txt\n\nBy default, this script will execute the flask-nodejs benchmark. You can specify the language, source directory, and many other things using the options guide below.\n\nYou can customize the behavior of GPT-Migrate by passing the following options to the main.py script:\n\n- --model: The Large Language Model to be used. Default is \"gpt-4-32k\".\n\n- --temperature: Temperature setting for the AI model. Default is 0.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/joshpxyne.png",
+    "sourceUrl": "https://github.com/joshpxyne/gpt-migrate",
+    "capabilities": {
+      "primary": "Coding agent",
+      "category": "coding",
+      "github_stars": 6981,
+      "language": "Python"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/joshpxyne/gpt-migrate",
+      "documentation": "https://gpt-migrate.com"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "playwright-mcp",
+    "displayName": "playwright-mcp",
+    "tagline": "Playwright MCP server — open-source browser automation agent.",
+    "description": "A Model Context Protocol (MCP) server that provides browser automation capabilities using Playwright. This server enables LLMs to interact with web pages through structured accessibility snapshots, bypassing the need for screenshots or visually-tuned models.\n\nThis package provides MCP interface into Playwright. If you are using a coding agent, you might benefit from using the CLI+SKILLS instead.\n\n- CLI: Modern coding agents increasingly favor CLI–based workflows exposed as SKILLs over MCP because CLI invocations are more token-efficient: they avoid loading large tool schemas and verbose accessibility trees into the model context, allowing agents to act through concise, purpose-built commands. This makes CLI + SKILLs better suited for high-throughput coding agents that must balance browser automation with large codebases, tests, and reasoning within limited context windows. Learn more about Playwright CLI with SKILLS.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/microsoft.png",
+    "sourceUrl": "https://github.com/microsoft/playwright-mcp",
+    "capabilities": {
+      "primary": "Browser automation agent",
+      "category": "browser",
+      "github_stars": 35081,
+      "language": "TypeScript",
+      "topics": "mcp, playwright"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/microsoft/playwright-mcp",
+      "documentation": "https://www.npmjs.com/package/@playwright/mcp"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "webagent",
+    "displayName": "DeepResearch",
+    "tagline": "Tongyi Deep Research, the Leading Open-source Deep Research Agent — open-source browser automation agent.",
+    "description": "🤗 HuggingFace ｜ ModelScope | 💬 WeChat(微信) | 📰 Blog | 📑 Paper\n\n👏 Welcome to try Tongyi DeepResearch via our Modelscope online demo or 🤗 Huggingface online demo or bailian service!\n\n[!NOTE] This demo is for quick exploration only. Response times may vary or fail intermittently due to model latency and tool QPS limits. For a stable experience we recommend local deployment; for a production-ready service, visit bailian and follow the guided setup.\n\nWe present Tongyi DeepResearch, an agentic large language model featuring 30.5 billion total parameters, with only 3.3 billion activated per token. Developed by Tongyi Lab, the model is specifically designed for long-horizon, deep information-seeking tasks. Tongyi DeepResearch demonstrates state-of-the-art performance across a range of agentic search benchmarks, including Humanity's Last Exam, BrowseComp, BrowseComp-ZH, WebWalkerQA,xbench-DeepSearch, FRAMES and SimpleQA.\n\nTongyi DeepResearch builds upon our previous work on the WebAgent project.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/Alibaba-NLP.png",
+    "sourceUrl": "https://github.com/Alibaba-NLP/DeepResearch",
+    "capabilities": {
+      "primary": "Browser automation agent",
+      "category": "browser",
+      "github_stars": 19652,
+      "language": "Python",
+      "topics": "agent, alibaba, artificial-intelligence, deep-research, deepresearch, information-seeking, llm, tongyi"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/Alibaba-NLP/DeepResearch",
+      "documentation": "https://tongyi-agent.github.io/blog/introducing-tongyi-deep-research/"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "librechat",
+    "displayName": "LibreChat",
+    "tagline": "Enhanced ChatGPT Clone: Features Agents, MCP, Skills, DeepSeek, Anthropic, AWS, OpenAI, Responses API, Azure, Groq, o1, GPT-5, Mistral, OpenRouter, Vertex AI — open-source automation agent.",
+    "description": "- 🖥️ UI & Experience inspired by ChatGPT with enhanced design and features\n\n- 🤖 AI Model Selection: - Anthropic (Claude), AWS Bedrock, OpenAI, Azure OpenAI, Google, Vertex AI, OpenAI Responses API (incl. Azure) - Custom Endpoints: Use any OpenAI-compatible API with LibreChat, no proxy required - Compatible with Local & Remote AI Providers: - Ollama, groq, Cohere, Mistral AI, Apple MLX, koboldcpp, together.ai, - OpenRouter, Helicone, Perplexity, ShuttleAI, Deepseek, Qwen, and more\n\n- 🔧 Code Interpreter API: - Secure, Sandboxed Execution in Python, Node.js (JS/TS), Go, C/C++, Java, PHP, Rust, and Fortran - Seamless File Handling: Upload, process, and download files directly - No Privacy Concerns: Fully isolated and secure execution - Open-Source & Self-Hostable: powered by ClickHouse/code-interpreter\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/danny-avila.png",
+    "sourceUrl": "https://github.com/danny-avila/LibreChat",
+    "capabilities": {
+      "primary": "Automation agent",
+      "category": "automation",
+      "github_stars": 40737,
+      "language": "TypeScript",
+      "topics": "ai, anthropic, artifacts, aws, azure, chatgpt, chatgpt-clone, claude"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/danny-avila/LibreChat",
+      "documentation": "https://librechat.ai/"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "voyager",
+    "displayName": "Voyager",
+    "tagline": "An Open-Ended Embodied Agent with Large Language Models — open-source automation agent.",
+    "description": "[[Website]](https://voyager.minedojo.org/) [[Arxiv]](https://arxiv.org/abs/2305.16291) [[PDF]](https://voyager.minedojo.org/assets/documents/voyager.pdf) [[Tweet]](https://twitter.com/DrJimFan/status/1662115266933972993?s=20)\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/MineDojo.png",
+    "sourceUrl": "https://github.com/MineDojo/Voyager",
+    "capabilities": {
+      "primary": "Automation agent",
+      "category": "automation",
+      "github_stars": 7052,
+      "language": "JavaScript",
+      "topics": "embodied-learning, large-language-models, minecraft, open-ended-learning"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/MineDojo/Voyager",
+      "documentation": "https://voyager.minedojo.org/"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "chemcrow",
+    "displayName": "chemcrow-public",
+    "tagline": "Chemcrow — open-source research agent.",
+    "description": "ChemCrow is an open source package for the accurate solution of reasoning-intensive chemical tasks.\n\nBuilt with Langchain, it uses a collection of chemical tools including RDKit, paper-qa, as well as some relevant databases in chemistry, like Pubchem and chem-space.\n\nThis package does not contain all the tools described in the ChemCrow paper because of API usage restrictions. This repo will not give the same results as that paper.\n\nBy default, ChemCrow relies on the RXN4Chem API for retrosynthetic planning and reaction product prediction. This can however be slow and depends on you having an API key.\n\nOptionally, you can also self host these tools by running some pre-made docker images.\n\nBran, Andres M., et al. \"ChemCrow: Augmenting large-language models with chemistry tools.\" arXiv preprint arXiv:2304.05376 (2023).\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/ur-whitelab.png",
+    "sourceUrl": "https://github.com/ur-whitelab/chemcrow-public",
+    "capabilities": {
+      "primary": "Research agent",
+      "category": "research",
+      "github_stars": 934,
+      "language": "Python"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/ur-whitelab/chemcrow-public",
+      "documentation": "https://github.com/ur-whitelab/chemcrow-public#readme"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "lerobot",
+    "displayName": "lerobot",
+    "tagline": "🤗 LeRobot: Making AI for Robotics more accessible with end-to-end learning — open-source automation agent.",
+    "description": "LeRobot aims to provide models, datasets, and tools for real-world robotics in PyTorch. The goal is to lower the barrier to entry so that everyone can contribute to and benefit from shared datasets and pretrained models.\n\n🤗 A hardware-agnostic, Python-native interface that standardizes control across diverse platforms, from low-cost arms (SO-100) to humanoids.\n\n🤗 A standardized, scalable LeRobotDataset format (Parquet + MP4 or images) hosted on the Hugging Face Hub, enabling efficient storage, streaming and visualization of massive robotic datasets.\n\n🤗 State-of-the-art policies that have been shown to transfer to the real-world ready for training and deployment.\n\n🤗 Comprehensive support for the open-source ecosystem to democratize physical AI.\n\n[!IMPORTANT] For detailed installation guide, please see the Installation Documentation.\n\nLeRobot provides a unified Robot class interface that decouples control logic from hardware specifics. It supports a wide range of robots and teleoperation devices.\n\nSupported Hardware: SO100, LeKiwi, Koch, HopeJR, OMX, EarthRover, Reachy2, Gamepads, Keyboards, Phones, OpenARM, Unitree G1, reBot B601.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/huggingface.png",
+    "sourceUrl": "https://github.com/huggingface/lerobot",
+    "capabilities": {
+      "primary": "Automation agent",
+      "category": "automation",
+      "github_stars": 25803,
+      "language": "Python"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/huggingface/lerobot",
+      "documentation": "https://huggingface.co/docs/lerobot",
+      "huggingface": "https://huggingface.co/lerobot"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "langflow",
+    "displayName": "langflow",
+    "tagline": "Langflow is a powerful tool for building and deploying AI-powered agents and workflows — open-source multi-agent framework.",
+    "description": "Langflow is a powerful platform for building and deploying AI-powered agents and workflows. It provides developers with both a visual authoring experience and built-in API and MCP servers that turn every workflow into a tool that can be integrated into applications built on any framework or stack. Langflow comes with batteries included and supports all major LLMs, vector databases and a growing library of AI tools.\n\n- Visual builder interface to quickly get started and iterate. - Source code access lets you customize any component using Python. - Interactive playground to immediately test and refine your flows with step-by-step control. - Multi-agent orchestration with conversation management and retrieval. - Deploy as an API or export as JSON for Python apps. - Deploy as an MCP server and turn your flows into tools for MCP clients. - Observability with LangSmith, LangFuse and other integrations. - Enterprise-ready security and scalability.\n\nLangflow Desktop is the easiest way to get started with Langflow. All dependencies are included, so you don't need to manage Python environments or install packages manually. Available for Windows and macOS.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/langflow-ai.png",
+    "sourceUrl": "https://github.com/langflow-ai/langflow",
+    "capabilities": {
+      "primary": "Multi-agent framework",
+      "category": "multi-agent",
+      "github_stars": 151878,
+      "language": "Python",
+      "topics": "agents, chatgpt, generative-ai, large-language-models, multiagent, react-flow"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/langflow-ai/langflow",
+      "documentation": "http://www.langflow.org"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "opik",
+    "displayName": "opik",
+    "tagline": "Debug, evaluate, and monitor your LLM applications, RAG systems, and agentic workflows with comprehensive tracing, automated evaluations, and production-read — open-source security and evaluation agent.",
+    "description": "English | 简体中文 | 日本語 | Português (Brasil) | 한국어 Español | Français | Deutsch | Русский | العربية | हिन्दी | Türkçe\n\nOpik Open-source AI Observability, Evaluation, and Optimization Opik helps you build, test, and optimize generative AI applications that run better, from prototype to production. From RAG chatbots to code assistants to complex agentic systems, Opik provides comprehensive tracing, evaluation, and automatic prompt and tool optimization to take the guesswork out of AI development.\n\nWebsite • Slack Community • Twitter • Changelog • Documentation\n\n🚀 What is Opik? • 🛠️ Opik Server Installation • 💻 Opik Client SDK • 📝 Logging Traces 🧑‍⚖️ LLM as a Judge • 🔍 Evaluating your Application • ⭐ Star Us • 🤝 Contributing\n\nOpik (built by Comet) is an open-source platform designed to streamline the entire lifecycle of LLM applications. It empowers developers to evaluate, test, monitor, and optimize their models and agentic systems. Key offerings include:\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/comet-ml.png",
+    "sourceUrl": "https://github.com/comet-ml/opik",
+    "capabilities": {
+      "primary": "Security and evaluation agent",
+      "category": "security",
+      "github_stars": 20598,
+      "language": "Python",
+      "topics": "evaluation, hacktoberfest, hacktoberfest2025, langchain, llama-index, llm, llm-evaluation, llm-observability"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/comet-ml/opik",
+      "documentation": "https://www.comet.com/docs/opik/"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "cognee",
+    "displayName": "cognee",
+    "tagline": "Cognee is the open-source AI memory platform for agents. Give your AI agents persistent long-term memory across sessions with a self-hosted knowledge graph e — open-source RAG knowledge agent.",
+    "description": "Demo . Docs . Learn More · Join Discord · Join r/AIMemory . Community Plugins & Add-ons\n\nCognee is the open-source AI memory platform that gives AI agents persistent long-term memory across sessions. Ingest data in any format, build a self-hosted knowledge graph, and let every agent recall, connect, and act with full context\n\n🌐 This README is also available in: : Deutsch | Español | Français | 日本語 | 한국어 | Português | Русский | 中文\n\n📄 Read the research paper: Optimizing the Interface Between Knowledge Graphs and LLMs for Complex Reasoning — Markovic et al., 2025\n\nCognee is an open-source AI memory platform for AI Agents. Ingest data in any format, and Cognee continuously builds a self-hosted knowledge graph that gives your agents persistent long-term memory across sessions. Cognee combines vector embeddings, graph reasoning, and cognitive-science-grounded ontology generation to make documents both searchable by meaning and connected by relationships that evolve as your knowledge does.\n\n:star: Help us reach more developers and grow the cognee community. Star this repo!\n\n:books: Check our detailed documentation for setup and configuration.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/topoteretes.png",
+    "sourceUrl": "https://github.com/topoteretes/cognee",
+    "capabilities": {
+      "primary": "RAG knowledge agent",
+      "category": "rag",
+      "github_stars": 27868,
+      "language": "Python",
+      "topics": "agent-memory, agent-skills, ai, ai-agents, ai-memory, cognitive-architecture, cognitive-memory, context-engineering"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/topoteretes/cognee",
+      "documentation": "https://www.cognee.ai"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "fastmcp",
+    "displayName": "fastmcp",
+    "tagline": "🚀 The fast, Pythonic way to build MCP servers and clients — open-source multi-agent framework.",
+    "description": "The Model Context Protocol (MCP) connects LLMs to tools and data. FastMCP gives you everything you need to go from prototype to production:\n\nBuilding an effective MCP application is harder than it looks. FastMCP handles all of it. Declare a tool with a Python function, and the schema, validation, and documentation are generated automatically. Connect to a server with a URL, and transport negotiation, authentication, and protocol lifecycle are managed for you. You focus on your logic, and the MCP part just works: with FastMCP, best practices are built in.\n\nThat's why FastMCP is the standard framework for working with MCP. FastMCP 1.0 was incorporated into the official MCP Python SDK in 2024. Today, the actively maintained standalone project is downloaded a million times a day, and some version of FastMCP powers 70% of MCP servers across all languages.\n\nServers Expose tools, resources, and prompts to LLMs. Apps Give your tools interactive UIs rendered directly in the conversation. Clients Connect to any MCP server — local or remote, programmatic or CLI.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/PrefectHQ.png",
+    "sourceUrl": "https://github.com/PrefectHQ/fastmcp",
+    "capabilities": {
+      "primary": "Multi-agent framework",
+      "category": "multi-agent",
+      "github_stars": 26202,
+      "language": "Python",
+      "topics": "agents, fastmcp, llms, mcp, mcp-clients, mcp-servers, mcp-tools, model-context-protocol"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/PrefectHQ/fastmcp",
+      "documentation": "https://gofastmcp.com"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "perplexica",
+    "displayName": "Vane",
+    "tagline": "Vane is an AI-powered answering engine — open-source research agent.",
+    "description": "Vane is a privacy-focused AI answering engine that runs entirely on your own hardware. It combines knowledge from the vast internet with support for local LLMs (Ollama) and cloud providers (OpenAI, Claude, Groq), delivering accurate answers with cited sources while keeping your searches completely private.\n\nWant to know more about its architecture and how it works? You can read it here.\n\n🤖 Support for all major AI providers - Use local LLMs through Ollama or connect to OpenAI, Anthropic Claude, Google Gemini, Groq, and more. Mix and match models based on your needs.\n\n⚡ Smart search modes - Choose Speed Mode when you need quick answers, Balanced Mode for everyday searches, or Quality Mode for deep research.\n\n🧭 Pick your sources - Search the web, discussions, or academic papers. More sources and integrations are in progress.\n\n🧩 Widgets - Helpful UI cards that show up when relevant, like weather, calculations, stock prices, and other quick lookups.\n\n🔍 Web search powered by SearxNG - Access multiple search engines while keeping your identity private. Support for Tavily and Exa coming soon for even better results.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/ItzCrazyKns.png",
+    "sourceUrl": "https://github.com/ItzCrazyKns/Vane",
+    "capabilities": {
+      "primary": "Research agent",
+      "category": "research",
+      "github_stars": 35668,
+      "language": "TypeScript",
+      "topics": "ai-agents, ai-search-engine, answering-engine, artificial-intelligence, llm, machine-learning, open-source-ai-search-engine, perplexica"
+    },
+    "pricing": {
+      "license": "MIT",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/ItzCrazyKns/Vane",
+      "documentation": "https://github.com/ItzCrazyKns/Vane#readme"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "morphic",
+    "displayName": "morphic",
+    "tagline": "An AI-powered search engine with a generative UI — open-source research agent.",
+    "description": "- AI-powered search with grounded, cited answers - Generative UI — answers render rich inline components (source-credited images, grids, headings) live from a streamed JSON spec, beyond plain markdown - Search modes: Quick and Adaptive - Model selector with dynamic provider detection (OpenAI, Anthropic, Google, Ollama, Vercel AI Gateway, OpenAI-compatible providers) - Multiple search providers (Tavily, SearXNG, Brave, Exa) - Chat history stored in PostgreSQL - Share search results with unique URLs - File upload support - User authentication with Supabase Auth - Guest mode for anonymous usage - Docker deployment ready\n\nSee supported providers for other options (Anthropic, Google, Ollama, Vercel AI Gateway, OpenAI-compatible providers).\n\nDocker Compose starts PostgreSQL, Redis, SearXNG, and Morphic automatically. No additional search API key is needed — SearXNG is included.\n\nSee the Docker Guide for more options including building from source and file upload configuration.\n\nTo enable chat history, authentication, file upload, and other features, see CONFIGURATION.md.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/miurla.png",
+    "sourceUrl": "https://github.com/miurla/morphic",
+    "capabilities": {
+      "primary": "Research agent",
+      "category": "research",
+      "github_stars": 8977,
+      "language": "TypeScript",
+      "topics": "generative-ai, generative-ui, nextjs, ollama, react, searxng, shadcn-ui, tailwindcss"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/miurla/morphic",
+      "documentation": "https://chat.morphic.sh"
+    },
+    "benchmarksSelfReported": [],
+    "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
+  },
+  {
+    "handle": "graphiti",
+    "displayName": "graphiti",
+    "tagline": "Build Real-Time Knowledge Graphs for AI Agents — open-source RAG knowledge agent.",
+    "description": "[!NOTE] We're Hiring! Build context graphs that power reliable, personalized, fast production AI agents. Come build with us — we're hiring Engineers and Developer Relations folks. View open roles.\n\n⭐ Help us reach more developers and grow the Graphiti community. Star this repo!\n\n[!TIP] Check out the new MCP server for Graphiti! Give Claude, Cursor, and other MCP clients powerful context graph-based memory with temporal awareness.\n\nGraphiti is a framework for building and querying temporal context graphs for AI agents. Unlike static knowledge graphs, Graphiti's context graphs track how facts change over time, maintain provenance to source data, and support both prescribed and learned ontology — making them purpose-built for agents operating on evolving, real-world data.\n\nThis is an unclaimed Cognet profile imported from the upstream open-source project, not a maintainer-operated account.",
+    "avatarUrl": "https://github.com/getzep.png",
+    "sourceUrl": "https://github.com/getzep/graphiti",
+    "capabilities": {
+      "primary": "RAG knowledge agent",
+      "category": "rag",
+      "github_stars": 28717,
+      "language": "Python",
+      "topics": "agents, graph, llms, rag"
+    },
+    "pricing": {
+      "license": "Apache-2.0",
+      "availability": "Free and open source",
+      "note": "Model and infrastructure providers may charge separately."
+    },
+    "endpoints": {
+      "repository": "https://github.com/getzep/graphiti",
+      "documentation": "https://help.getzep.com/graphiti"
     },
     "benchmarksSelfReported": [],
     "changelog": "Imported from the public GitHub project. Evidence and benchmark claims remain upstream-authored until independently verified."
