@@ -1,0 +1,365 @@
+- generic [ref=e1]:
+  - generic [active]:
+    - generic [ref=e146]:
+      - generic [ref=e147]:
+        - navigation [ref=e149]:
+          - button [disabled] [ref=e150]:
+            - img "previous" [ref=e151]
+          - generic [ref=e153]:
+            - generic [ref=e154]: 1/
+            - text: "2"
+          - button [ref=e155] [cursor=pointer]:
+            - img "next" [ref=e156]
+        - link "Next.js 15.5.20 (outdated) Turbopack" [ref=e159] [cursor=pointer]:
+          - /url: https://nextjs.org/docs/messages/version-staleness
+          - generic "An outdated version detected (latest is 16.2.10), upgrade is highly recommended!" [ref=e162]: Next.js 15.5.20 (outdated)
+          - generic [ref=e163]: Turbopack
+      - generic [ref=e164]:
+        - dialog "Console Error" [ref=e165]:
+          - generic [ref=e168]:
+            - generic [ref=e169]:
+              - generic [ref=e170]:
+                - generic [ref=e171]: Console Error
+                - generic [ref=e173]:
+                  - button "Copy Error Info" [ref=e174] [cursor=pointer]
+                  - button "No related documentation found" [disabled] [ref=e177]
+                  - link "Learn more about enabling Node.js inspector for server code with Chrome DevTools" [ref=e180] [cursor=pointer]:
+                    - /url: https://nextjs.org/docs/app/building-your-application/configuring/debugging#server-side-code
+              - generic [ref=e189]:
+                - paragraph [ref=e190]: "Base UI: A component that acts as a button expected a native <button> because the `nativeButton` prop is true. Rendering a non-<button> removes native button semantics, which can impact forms and accessibility. Use a real <button> in the `render` prop, or set `nativeButton` to `false`. at Button (about://React/Server/C:%5CAryan%5CGitHub%20Projects%5Ccognet%5C.next%5Cserver%5Cchunks%5Cssr%5C_39288667._.js?17:88:263) at <anonymous> (about://React/Server/C:%5CAryan%5CGitHub%20Projects%5Ccognet%5C.next%5Cserver%5Cchunks%5Cssr%5C_39288667._.js?4:163:303) at Array.map (<anonymous>:1:18) at TopNav (about://React/Server/C:%5CAryan%5CGitHub%20Projects%5Ccognet%5C.next%5Cserver%5Cchunks%5Cssr%5C_39288667._.js?3:163:40) at PlatformLayout (about://React/Server/C:%5CAryan%5CGitHub%20Projects%5Ccognet%5C.next%5Cserver%5Cchunks%5Cssr%5C_39288667._.js?0:390:264)"
+                - button "Show More" [ref=e192] [cursor=pointer]
+            - generic [ref=e193]:
+              - generic [ref=e194]:
+                - paragraph [ref=e196]:
+                  - generic [ref=e201]: components\ui\button.tsx (50:5) @ Button
+                  - button "Open in editor" [ref=e202] [cursor=pointer]
+                - generic [ref=e207]:
+                  - generic [ref=e208]: "48 | }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {"
+                  - generic [ref=e209]: 49 | return (
+                  - generic [ref=e210]: "> 50 | <ButtonPrimitive"
+                  - generic [ref=e211]: "| ^"
+                  - generic [ref=e212]: 51 | data-slot="button"
+                  - generic [ref=e213]: "52 | className={cn(buttonVariants({ variant, size, className }))}"
+                  - generic [ref=e214]: "53 | {...props}"
+              - generic [ref=e215]:
+                - paragraph [ref=e217]:
+                  - text: Call Stack
+                  - generic [ref=e218]: "60"
+                - generic [ref=e219]:
+                  - generic [ref=e220]:
+                    - text: Button
+                    - button "Open Button in editor" [ref=e221] [cursor=pointer]
+                  - text: components\ui\button.tsx (50:5)
+                - generic [ref=e224]:
+                  - generic [ref=e225]:
+                    - text: <anonymous>
+                    - button "Open <anonymous> in editor" [ref=e226] [cursor=pointer]
+                  - text: components\shell\top-nav.tsx (26:13)
+                - generic [ref=e229]:
+                  - generic [ref=e230]: Array.map
+                  - text: <anonymous>
+                - generic [ref=e231]:
+                  - generic [ref=e232]:
+                    - text: TopNav
+                    - button "Open TopNav in editor" [ref=e233] [cursor=pointer]
+                  - text: components\shell\top-nav.tsx (25:21)
+                - generic [ref=e236]:
+                  - generic [ref=e237]:
+                    - text: PlatformLayout
+                    - button "Open PlatformLayout in editor" [ref=e238] [cursor=pointer]
+                  - text: app\(platform)\layout.tsx (34:7)
+                - generic [ref=e241]:
+                  - generic [ref=e242]:
+                    - text: createConsoleError
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e243] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_b0daae9a._.js (1651:71)
+                - generic [ref=e246]:
+                  - generic [ref=e247]:
+                    - text: handleConsoleError
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e248] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_b0daae9a._.js (2249:54)
+                - generic [ref=e251]:
+                  - generic [ref=e252]:
+                    - text: console.error
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e253] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_b0daae9a._.js (2400:57)
+                - generic [ref=e256]:
+                  - generic [ref=e257]:
+                    - text: error
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e258] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_19879ecf._.js (2912:21)
+                - generic [ref=e261]:
+                  - generic [ref=e262]:
+                    - text: useButton.useEffect
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e263] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_19879ecf._.js (4922:185)
+                - generic [ref=e266]:
+                  - generic [ref=e267]:
+                    - text: Object.react_stack_bottom_frame
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e268] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (13122:22)
+                - generic [ref=e271]:
+                  - generic [ref=e272]:
+                    - text: runWithFiberInDEV
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e273] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (886:74)
+                - generic [ref=e276]:
+                  - generic [ref=e277]:
+                    - text: commitHookEffectListMount
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e278] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (6640:628)
+                - generic [ref=e281]:
+                  - generic [ref=e282]:
+                    - text: commitHookPassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e283] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (6675:60)
+                - generic [ref=e286]:
+                  - generic [ref=e287]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e288] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7630:33)
+                - generic [ref=e291]:
+                  - generic [ref=e292]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e293] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e296]:
+                  - generic [ref=e297]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e298] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e301]:
+                  - generic [ref=e302]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e303] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e306]:
+                  - generic [ref=e307]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e308] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e311]:
+                  - generic [ref=e312]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e313] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e316]:
+                  - generic [ref=e317]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e318] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e321]:
+                  - generic [ref=e322]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e323] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e326]:
+                  - generic [ref=e327]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e328] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e331]:
+                  - generic [ref=e332]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e333] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e336]:
+                  - generic [ref=e337]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e338] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e341]:
+                  - generic [ref=e342]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e343] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e346]:
+                  - generic [ref=e347]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e348] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e351]:
+                  - generic [ref=e352]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e353] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e356]:
+                  - generic [ref=e357]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e358] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e361]:
+                  - generic [ref=e362]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e363] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e366]:
+                  - generic [ref=e367]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e368] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e371]:
+                  - generic [ref=e372]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e373] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e376]:
+                  - generic [ref=e377]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e378] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7633:17)
+                - generic [ref=e381]:
+                  - generic [ref=e382]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e383] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e386]:
+                  - generic [ref=e387]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e388] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e391]:
+                  - generic [ref=e392]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e393] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e396]:
+                  - generic [ref=e397]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e398] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7633:17)
+                - generic [ref=e401]:
+                  - generic [ref=e402]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e403] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e406]:
+                  - generic [ref=e407]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e408] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e411]:
+                  - generic [ref=e412]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e413] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e416]:
+                  - generic [ref=e417]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e418] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e421]:
+                  - generic [ref=e422]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e423] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e426]:
+                  - generic [ref=e427]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e428] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e431]:
+                  - generic [ref=e432]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e433] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e436]:
+                  - generic [ref=e437]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e438] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7633:17)
+                - generic [ref=e441]:
+                  - generic [ref=e442]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e443] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e446]:
+                  - generic [ref=e447]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e448] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e451]:
+                  - generic [ref=e452]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e453] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e456]:
+                  - generic [ref=e457]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e458] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e461]:
+                  - generic [ref=e462]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e463] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e466]:
+                  - generic [ref=e467]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e468] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e471]:
+                  - generic [ref=e472]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e473] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e476]:
+                  - generic [ref=e477]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e478] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7673:17)
+                - generic [ref=e481]:
+                  - generic [ref=e482]:
+                    - text: recursivelyTraversePassiveMountEffects
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e483] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7621:106)
+                - generic [ref=e486]:
+                  - generic [ref=e487]:
+                    - text: commitPassiveMountOnFiber
+                    - button "Sourcemapping failed. Click to log cause of error." [ref=e488] [cursor=pointer]
+                  - text: file:///C:/Aryan/GitHub%20Projects/cognet/.next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (7629:17)
+                - generic [ref=e491]:
+                  - generic [ref=e492]:
+                    - text: Button
+                    - button "Open Button in editor" [ref=e493] [cursor=pointer]
+                  - text: components\ui\button.tsx (50:5)
+                - generic [ref=e496]:
+                  - generic [ref=e497]:
+                    - text: <anonymous>
+                    - button "Open <anonymous> in editor" [ref=e498] [cursor=pointer]
+                  - text: components\shell\top-nav.tsx (26:13)
+                - generic [ref=e501]:
+                  - generic [ref=e502]: Array.map
+                  - text: <anonymous>
+                - generic [ref=e503]:
+                  - generic [ref=e504]:
+                    - text: TopNav
+                    - button "Open TopNav in editor" [ref=e505] [cursor=pointer]
+                  - text: components\shell\top-nav.tsx (25:21)
+                - generic [ref=e508]:
+                  - generic [ref=e509]:
+                    - text: PlatformLayout
+                    - button "Open PlatformLayout in editor" [ref=e510] [cursor=pointer]
+                  - text: app\(platform)\layout.tsx (34:7)
+          - generic [ref=e513]:
+            - generic [ref=e514]: "1"
+            - generic [ref=e515]: "2"
+        - contentinfo [ref=e516]:
+          - region "Error feedback" [ref=e517]:
+            - paragraph [ref=e518]:
+              - link "Was this helpful?" [ref=e519] [cursor=pointer]:
+                - /url: https://nextjs.org/telemetry#error-feedback
+            - button "Mark as helpful" [ref=e520] [cursor=pointer]
+            - button "Mark as not helpful" [ref=e524] [cursor=pointer]
+    - generic [ref=e129] [cursor=pointer]:
+      - button "Open Next.js Dev Tools" [ref=e130]
+      - generic [ref=e134]:
+        - button "Open issues overlay" [ref=e135]:
+          - generic [ref=e527]:
+            - generic [ref=e528]: "1"
+            - generic [ref=e529]: "2"
+          - generic [ref=e139]:
+            - text: Issue
+            - generic [ref=e530]: s
+        - button "Collapse issues badge" [ref=e140]
+  - 'heading "Application error: a client-side exception has occurred while loading localhost (see the browser console for more information)." [level=2] [ref=e533]'
