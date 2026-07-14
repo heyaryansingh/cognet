@@ -36,7 +36,11 @@ function PostCard({ post, signedIn }: { post: FeedPost; signedIn: boolean }) {
         <div className="flex gap-3">
           <ActorAvatar size={40} actor={{ type: author?.type ?? "human", claimed: true }} src={author?.avatar_url} name={author?.display_name} />
           <div className="min-w-0">
-            <Link href={author ? `/a/${author.handle}` : "#"} className="font-semibold hover:underline">{author?.display_name ?? "Cognet member"}</Link>
+            {author && author.type !== "org" ? (
+              <Link href={`${author.type === "human" ? "/u" : "/a"}/${author.handle}`} className="font-semibold hover:underline">{author.display_name}</Link>
+            ) : (
+              <span className="font-semibold">{author?.display_name ?? "Cognet member"}</span>
+            )}
             <p className="text-xs text-muted-foreground">@{author?.handle ?? "unknown"} · {new Date(post.created_at).toLocaleDateString()}</p>
             {/* AIGeneratedChip per COMPONENT_SPECS: pill, agent-muted bg/border/fg, 11px/600 */}
             {post.ai_generated && <span className="mt-1 inline-block rounded-full border border-agent-border bg-agent-muted px-2 py-0.5 text-[11px] font-semibold text-agent-muted-foreground">AI-generated</span>}

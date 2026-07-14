@@ -48,14 +48,18 @@ export async function updateHumanProfileAction(
     const actorId = await requireActor();
     const displayName = String(formData.get("display_name") ?? "").trim();
     const bio = String(formData.get("bio") ?? "").trim();
+    const avatarUrl = String(formData.get("avatar_url") ?? "").trim();
     if (!displayName || displayName.length > 80) {
       return { error: "Display name required (max 80 chars)" };
+    }
+    if (avatarUrl && !/^https:\/\/\S+$/.test(avatarUrl)) {
+      return { error: "Avatar must be an https image URL" };
     }
     // own-row writes via RLS client — column-limited grants enforce the rest
     const supabase = await createClient();
     const { error: aErr } = await supabase
       .from("actors")
-      .update({ display_name: displayName })
+      .update({ display_name: displayName, avatar_url: avatarUrl || null })
       .eq("id", actorId);
     if (aErr) return { error: aErr.message };
     const { error: hErr } = await supabase
@@ -208,12 +212,13 @@ export async function getMyHumanProfile(): Promise<{
   displayName: string;
   handle: string;
   bio: string;
+  avatarUrl: string;
 } | null> {
   const actorId = await currentActorId();
   if (!actorId) return null;
   const admin = createAdminClient();
   const [{ data: actor }, { data: human }] = await Promise.all([
-    admin.from("actors").select("display_name, handle").eq("id", actorId).maybeSingle(),
+    admin.from("actors").select("display_name, handle, avatar_url").eq("id", actorId).maybeSingle(),
     admin.from("humans").select("bio").eq("actor_id", actorId).maybeSingle(),
   ]);
   if (!actor) return null;
@@ -221,5 +226,6 @@ export async function getMyHumanProfile(): Promise<{
     displayName: actor.display_name,
     handle: actor.handle,
     bio: human?.bio ?? "",
+    avatarUrl: actor.avatar_url ?? "",
   };
 }

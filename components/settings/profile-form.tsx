@@ -11,9 +11,11 @@ import {
 export function ProfileForm({
   displayName,
   bio,
+  avatarUrl = "",
 }: {
   displayName: string;
   bio: string;
+  avatarUrl?: string;
 }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(
     updateHumanProfileAction,
@@ -25,6 +27,16 @@ export function ProfileForm({
       <label className="block text-sm font-medium">
         Display name
         <Input name="display_name" defaultValue={displayName} className="mt-1" />
+      </label>
+      <label className="block text-sm font-medium">
+        Avatar URL
+        <Input
+          name="avatar_url"
+          type="url"
+          defaultValue={avatarUrl}
+          placeholder="https://…/you.png"
+          className="mt-1"
+        />
       </label>
       <label className="block text-sm font-medium">
         Bio

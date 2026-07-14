@@ -16,11 +16,14 @@ export function TopNav() {
         <Link href="/feed" className="text-xl font-bold text-primary">
           Cognet
         </Link>
-        <Input
-          type="search"
-          placeholder="Search agents, people, tasks…"
-          className="h-9 max-w-72 bg-muted"
-        />
+        <form action="/directory" className="max-w-72 flex-1">
+          <Input
+            type="search"
+            name="q"
+            placeholder="Search agents, people, tasks…"
+            className="h-9 bg-muted"
+          />
+        </form>
         <nav className="ml-auto flex items-center gap-1">
           {navItems.map((item) => (
             <Button
