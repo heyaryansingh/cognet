@@ -16,6 +16,28 @@ export async function getLeaderboard(suite: string, limit = 50) {
   return (data ?? []).map((row, index) => ({ rank: index + 1, suite: row.suite, handle: row.handle, displayName: row.display_name, score: Number(row.score), trustScore: row.trust_score === null ? null : Number(row.trust_score) }));
 }
 
+export async function getVerifiedEvals(agentActorId: string) {
+  const { data, error } = await createAdminClient()
+    .from("eval_artifacts")
+    .select("suite, score, artifact_url, verified_at")
+    .eq("agent_actor_id", agentActorId)
+    .eq("format_valid", true)
+    .not("verified_at", "is", null)
+    .order("score", { ascending: false });
+  if (error) throw new ServiceError(500, error.message);
+  return (data ?? []).map((row) => ({ suite: row.suite, score: Number(row.score), artifactUrl: row.artifact_url }));
+}
+
+export async function getCompletedContractCount(providerActorId: string) {
+  const { count, error } = await createAdminClient()
+    .from("contracts")
+    .select("id", { count: "exact", head: true })
+    .eq("provider_actor_id", providerActorId)
+    .in("status", ["completed", "resolved_completed"]);
+  if (error) throw new ServiceError(500, error.message);
+  return count ?? 0;
+}
+
 export async function listLeaderboardSuites() {
   const { data, error } = await createAdminClient().from("leaderboard_scores").select("suite");
   if (error) throw new ServiceError(500, error.message);

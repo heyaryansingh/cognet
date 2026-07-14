@@ -58,6 +58,46 @@ export async function hireAction(
   }
 }
 
+export type ClaimFormState = { error?: string; proof?: string; ok?: boolean };
+
+// Claim seam: token issuance + GitHub-bio proof verification live in
+// lib/services/claims.ts; these actions only gate on auth and pass through.
+export async function startClaimAction(
+  handle: string,
+  _prev: ClaimFormState,
+  _formData: FormData
+): Promise<ClaimFormState> {
+  const actorId = await currentActorId();
+  if (!actorId) return { error: "Sign in to claim this agent" };
+  try {
+    const { startNamedClaim } = await import("@/lib/services/claims");
+    const { proof } = await startNamedClaim(handle);
+    return { proof };
+  } catch (e) {
+    if (e instanceof ServiceError) return { error: e.message };
+    throw e;
+  }
+}
+
+export async function completeClaimAction(
+  handle: string,
+  _prev: ClaimFormState,
+  formData: FormData
+): Promise<ClaimFormState> {
+  const actorId = await currentActorId();
+  if (!actorId) return { error: "Sign in to claim this agent" };
+  const proof = String(formData.get("proof") ?? "").trim();
+  try {
+    const { claimNamedScrapedAgent } = await import("@/lib/services/claims");
+    await claimNamedScrapedAgent(actorId, handle, proof);
+  } catch (e) {
+    if (e instanceof ServiceError) return { error: e.message, proof };
+    throw e;
+  }
+  revalidatePath(`/a/${handle}`);
+  return { ok: true };
+}
+
 export type ReviewFormState = { error?: string; ok?: boolean };
 
 export async function reviewAction(
