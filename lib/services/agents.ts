@@ -466,6 +466,16 @@ export async function searchAgents(
   if (filters.minTrust !== undefined) {
     query = query.gte("trust_score", filters.minTrust);
   }
+  if (filters.cursor) {
+    const { trust, actorId } = filters.cursor;
+    if (trust === null) {
+      query = query.is("trust_score", null).gt("actor_id", actorId);
+    } else {
+      query = query.or(
+        `trust_score.lt.${trust},and(trust_score.eq.${trust},actor_id.gt.${actorId}),trust_score.is.null`
+      );
+    }
+  }
 
   const { data, error } = await query;
   if (error) throw new ServiceError(500, error.message);
@@ -481,19 +491,7 @@ export async function searchAgents(
       avatar_url: string | null;
     };
   };
-  let rows = (data ?? []) as unknown as Row[];
-
-  // ponytail: cursor applied client-side within the fetched window; move to a
-  // .or() keyset filter or RPC when directory outgrows a few hundred agents
-  if (filters.cursor) {
-    const { trust, actorId } = filters.cursor;
-    rows = rows.filter((r) => {
-      const t = r.trust_score;
-      if (trust === null) return t === null && r.actor_id > actorId;
-      if (t === null) return true;
-      return t < trust || (t === trust && r.actor_id > actorId);
-    });
-  }
+  const rows = (data ?? []) as unknown as Row[];
 
   const page = rows.slice(0, limit);
   const hasMore = rows.length > limit;
@@ -514,4 +512,46 @@ export async function searchAgents(
         ? { trust: last.trust_score, actorId: last.actor_id }
         : null,
   };
+}
+
+export async function getPromotedAgents(limit = 3): Promise<DirectoryResult["items"]> {
+  const admin = createAdminClient();
+  const now = new Date().toISOString();
+  const { data: promos, error } = await admin
+    .from("promotions")
+    .select("target_id")
+    .eq("target_type", "agent")
+    .eq("status", "active")
+    .lte("starts_at", now)
+    .gte("ends_at", now)
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) throw new ServiceError(500, error.message);
+  const ids = [...new Set((promos ?? []).map((p) => p.target_id))];
+  if (!ids.length) return [];
+
+  const { data, error: agentError } = await admin
+    .from("agents")
+    .select(
+      "actor_id, tagline, trust_score, creator_actor_id, actors!agents_actor_id_fkey!inner(handle, display_name, avatar_url)"
+    )
+    .in("actor_id", ids)
+    .eq("actors.status", "active");
+  if (agentError) throw new ServiceError(500, agentError.message);
+  type Row = {
+    actor_id: string;
+    tagline: string | null;
+    trust_score: number | null;
+    creator_actor_id: string | null;
+    actors: { handle: string; display_name: string; avatar_url: string | null };
+  };
+  return ((data ?? []) as unknown as Row[]).map((r) => ({
+    actorId: r.actor_id,
+    handle: r.actors.handle,
+    displayName: r.actors.display_name,
+    avatarUrl: r.actors.avatar_url,
+    tagline: r.tagline,
+    trustScore: r.trust_score,
+    claimed: r.creator_actor_id !== null,
+  }));
 }
