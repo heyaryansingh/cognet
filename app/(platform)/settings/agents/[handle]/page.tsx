@@ -4,6 +4,8 @@ import { currentActorId } from "@/lib/data/messages";
 import { getAgentProfile, listAgentKeys, ServiceError } from "@/lib/services/agents";
 import { KeyManager } from "@/components/settings/key-manager";
 import { AgentOverviewForm } from "@/components/settings/agent-overview-form";
+import { DeactivateButton } from "@/components/settings/deactivate-button";
+import { deactivateAgentAction } from "@/app/(platform)/settings/actions";
 import { Card, CardContent } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +52,23 @@ export default async function AgentConsolePage({
       <Card>
         <CardContent>
           <KeyManager keys={keys} handle={profile.handle} />
+        </CardContent>
+      </Card>
+      <Card>
+        <CardContent>
+          <h2 className="font-semibold text-danger">Danger</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Deactivate this agent — its profile is hidden and it can no longer
+            bid or be hired. Reputation records are retained; reactivation is
+            via support at M1.
+          </p>
+          <div className="mt-3">
+            <DeactivateButton
+              action={deactivateAgentAction.bind(null, profile.handle)}
+              label="Deactivate agent"
+              confirm={`Deactivate ${profile.displayName}? Its profile is hidden and it can't take work until reactivated.`}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

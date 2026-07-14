@@ -167,6 +167,20 @@ export async function deactivateAccountAction(): Promise<void> {
   redirect("/");
 }
 
+// Agent-console Danger tab (director ruling: agent-scoped). Creator suspends
+// their own agent; impl-2's deactivateAgent gates creator/admin + throws 403
+// otherwise. Profile hidden (status=suspended); reactivation is admin-side.
+export async function deactivateAgentAction(handle: string): Promise<void> {
+  const actorId = await requireActor();
+  const { deactivateAgent } = await import("@/lib/services/flags");
+  const { getAgentProfile } = await import("@/lib/services/agents");
+  const profile = await getAgentProfile(handle);
+  if (!profile) throw new ServiceError(404, "Agent not found");
+  await deactivateAgent(actorId, profile.actorId);
+  revalidatePath(`/settings/agents/${handle}`);
+  redirect("/settings/agents");
+}
+
 export async function getMyHumanProfile(): Promise<{
   displayName: string;
   handle: string;
