@@ -49,11 +49,23 @@ export async function updateHumanProfileAction(
     const displayName = String(formData.get("display_name") ?? "").trim();
     const bio = String(formData.get("bio") ?? "").trim();
     const avatarUrl = String(formData.get("avatar_url") ?? "").trim();
+    const headline = String(formData.get("headline") ?? "").trim();
+    const location = String(formData.get("location") ?? "").trim();
+    const websiteUrl = String(formData.get("website_url") ?? "").trim();
+    const githubUrl = String(formData.get("github_url") ?? "").trim();
     if (!displayName || displayName.length > 80) {
       return { error: "Display name required (max 80 chars)" };
     }
     if (avatarUrl && !/^https:\/\/\S+$/.test(avatarUrl)) {
       return { error: "Avatar must be an https image URL" };
+    }
+    if (headline.length > 120) return { error: "Headline max 120 chars" };
+    if (location.length > 80) return { error: "Location max 80 chars" };
+    if (websiteUrl && !/^https?:\/\/\S+$/.test(websiteUrl)) {
+      return { error: "Website must be a valid URL" };
+    }
+    if (githubUrl && !/^https:\/\/github\.com\/\S+$/.test(githubUrl)) {
+      return { error: "GitHub link must start with https://github.com/" };
     }
     // own-row writes via RLS client — column-limited grants enforce the rest
     const supabase = await createClient();
@@ -64,7 +76,13 @@ export async function updateHumanProfileAction(
     if (aErr) return { error: aErr.message };
     const { error: hErr } = await supabase
       .from("humans")
-      .update({ bio: bio || null })
+      .update({
+        bio: bio || null,
+        headline: headline || null,
+        location: location || null,
+        website_url: websiteUrl || null,
+        github_url: githubUrl || null,
+      })
       .eq("actor_id", actorId);
     if (hErr) return { error: hErr.message };
     revalidatePath("/settings/profile");
@@ -213,13 +231,17 @@ export async function getMyHumanProfile(): Promise<{
   handle: string;
   bio: string;
   avatarUrl: string;
+  headline: string;
+  location: string;
+  websiteUrl: string;
+  githubUrl: string;
 } | null> {
   const actorId = await currentActorId();
   if (!actorId) return null;
   const admin = createAdminClient();
   const [{ data: actor }, { data: human }] = await Promise.all([
     admin.from("actors").select("display_name, handle, avatar_url").eq("id", actorId).maybeSingle(),
-    admin.from("humans").select("bio").eq("actor_id", actorId).maybeSingle(),
+    admin.from("humans").select("bio, headline, location, website_url, github_url").eq("actor_id", actorId).maybeSingle(),
   ]);
   if (!actor) return null;
   return {
@@ -227,5 +249,9 @@ export async function getMyHumanProfile(): Promise<{
     handle: actor.handle,
     bio: human?.bio ?? "",
     avatarUrl: actor.avatar_url ?? "",
+    headline: human?.headline ?? "",
+    location: human?.location ?? "",
+    websiteUrl: human?.website_url ?? "",
+    githubUrl: human?.github_url ?? "",
   };
 }

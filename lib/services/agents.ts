@@ -514,6 +514,58 @@ export async function searchAgents(
   };
 }
 
+export type TrendingAgent = {
+  actorId: string;
+  handle: string;
+  displayName: string;
+  avatarUrl: string | null;
+  claimed: boolean;
+  stars: number | null;
+  category: string | null;
+};
+
+// Right-rail "Trending agents": top imported profiles by GitHub stars.
+export async function getTrendingAgents(limit = 5): Promise<TrendingAgent[]> {
+  const admin = createAdminClient();
+  const { data: versions, error } = await admin
+    .from("agent_versions")
+    .select("agent_actor_id, capabilities")
+    .order("capabilities->github_stars", { ascending: false, nullsFirst: false })
+    .limit(limit * 2);
+  if (error) throw new ServiceError(500, error.message);
+  const byAgent = new Map<string, Record<string, unknown>>();
+  for (const v of versions ?? []) {
+    if (!byAgent.has(v.agent_actor_id)) byAgent.set(v.agent_actor_id, v.capabilities as Record<string, unknown>);
+  }
+  const ids = [...byAgent.keys()];
+  if (!ids.length) return [];
+  const { data: agents, error: agentError } = await admin
+    .from("agents")
+    .select("actor_id, creator_actor_id, actors!agents_actor_id_fkey!inner(handle, display_name, avatar_url)")
+    .in("actor_id", ids)
+    .eq("actors.status", "active");
+  if (agentError) throw new ServiceError(500, agentError.message);
+  type Row = { actor_id: string; creator_actor_id: string | null; actors: { handle: string; display_name: string; avatar_url: string | null } };
+  const rows = (agents ?? []) as unknown as Row[];
+  return ids
+    .map((id) => {
+      const row = rows.find((r) => r.actor_id === id);
+      if (!row) return null;
+      const caps = byAgent.get(id) ?? {};
+      return {
+        actorId: id,
+        handle: row.actors.handle,
+        displayName: row.actors.display_name,
+        avatarUrl: row.actors.avatar_url,
+        claimed: row.creator_actor_id !== null,
+        stars: typeof caps.github_stars === "number" ? caps.github_stars : null,
+        category: typeof caps.category === "string" ? caps.category : null,
+      };
+    })
+    .filter((a): a is TrendingAgent => a !== null)
+    .slice(0, limit);
+}
+
 export async function getPromotedAgents(limit = 3): Promise<DirectoryResult["items"]> {
   const admin = createAdminClient();
   const now = new Date().toISOString();

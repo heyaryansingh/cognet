@@ -12,18 +12,18 @@ const avatar = (seed) => `https://api.dicebear.com/9.x/notionists/svg?seed=${see
 const daysAgo = (d) => new Date(Date.now() - d * 86400_000).toISOString();
 
 const PERSONAS = [
-  { handle: "maya-chen", name: "Maya Chen", bio: "ML engineer at a fintech. I hire coding agents for the boring 80% and review the interesting 20%. Opinions on evals are my own." },
-  { handle: "dev-okafor", name: "Dev Okafor", bio: "Indie hacker shipping small products fast. Everything I build has at least one agent in the loop. Currently obsessed with browser automation." },
-  { handle: "sara-lindqvist", name: "Sara Lindqvist", bio: "PhD student, NLP + agent evaluation. I care about what benchmarks actually measure. GAIA apologist." },
-  { handle: "jake-morrison", name: "Jake Morrison", bio: "SRE. I let k8sgpt read my clusters so I don't have to. Pager duty made me do it." },
-  { handle: "priya-raghavan", name: "Priya Raghavan", bio: "Data scientist. Text-to-SQL agents saved my team a full headcount of ad-hoc query requests." },
-  { handle: "tom-becker", name: "Tom Becker", bio: "Founder, devtools startup. We evaluate every open-source coding agent before building anything in-house. Usually we don't have to." },
-  { handle: "aiko-tanaka", name: "Aiko Tanaka", bio: "PM for an AI platform team. I translate between 'the agent works' and 'the agent works in production'." },
-  { handle: "luis-hernandez", name: "Luis Hernandez", bio: "Security researcher. I red-team LLM agents for a living. garak and promptfoo are my daily drivers." },
-  { handle: "emma-wright", name: "Emma Wright", bio: "Technical writer. Documenting agent workflows before they change again. RAG pipelines for docs are underrated." },
-  { handle: "noah-goldberg", name: "Noah Goldberg", bio: "Quant. Backtesting agent-generated strategies so you don't have to. Most of them lose money — the interesting ones don't." },
-  { handle: "fatima-alrashid", name: "Fatima Al-Rashid", bio: "Robotics engineer. Watching LeRobot and the embodied-agent space very closely. Sim-to-real is still the boss fight." },
-  { handle: "alexei-volkov", name: "Alexei Volkov", bio: "Open-source maintainer. If your agent opened a PR on my repo, I probably reviewed it. Some of them are getting good." },
+  { handle: "maya-chen", headline: "ML Engineer · agent evals in production", location: "San Francisco, USA", name: "Maya Chen", bio: "ML engineer at a fintech. I hire coding agents for the boring 80% and review the interesting 20%. Opinions on evals are my own." },
+  { handle: "dev-okafor", headline: "Indie hacker · browser automation everything", location: "Lagos, Nigeria", name: "Dev Okafor", bio: "Indie hacker shipping small products fast. Everything I build has at least one agent in the loop. Currently obsessed with browser automation." },
+  { handle: "sara-lindqvist", headline: "PhD researcher · agent evaluation & benchmarks", location: "Stockholm, Sweden", name: "Sara Lindqvist", bio: "PhD student, NLP + agent evaluation. I care about what benchmarks actually measure. GAIA apologist." },
+  { handle: "jake-morrison", headline: "Site Reliability Engineer · AIOps", location: "Denver, USA", name: "Jake Morrison", bio: "SRE. I let k8sgpt read my clusters so I don't have to. Pager duty made me do it." },
+  { handle: "priya-raghavan", headline: "Data Scientist · text-to-SQL at scale", location: "Bengaluru, India", name: "Priya Raghavan", bio: "Data scientist. Text-to-SQL agents saved my team a full headcount of ad-hoc query requests." },
+  { handle: "tom-becker", headline: "Founder · devtools for agent teams", location: "Berlin, Germany", name: "Tom Becker", bio: "Founder, devtools startup. We evaluate every open-source coding agent before building anything in-house. Usually we don't have to." },
+  { handle: "aiko-tanaka", headline: "Product Manager · AI platform", location: "Tokyo, Japan", name: "Aiko Tanaka", bio: "PM for an AI platform team. I translate between 'the agent works' and 'the agent works in production'." },
+  { handle: "luis-hernandez", headline: "Security Researcher · LLM red-teaming", location: "Mexico City, Mexico", name: "Luis Hernandez", bio: "Security researcher. I red-team LLM agents for a living. garak and promptfoo are my daily drivers." },
+  { handle: "emma-wright", headline: "Technical Writer · docs + RAG", location: "London, UK", name: "Emma Wright", bio: "Technical writer. Documenting agent workflows before they change again. RAG pipelines for docs are underrated." },
+  { handle: "noah-goldberg", headline: "Quant · agent-generated strategies", location: "New York, USA", name: "Noah Goldberg", bio: "Quant. Backtesting agent-generated strategies so you don't have to. Most of them lose money — the interesting ones don't." },
+  { handle: "fatima-alrashid", headline: "Robotics Engineer · embodied agents", location: "Dubai, UAE", name: "Fatima Al-Rashid", bio: "Robotics engineer. Watching LeRobot and the embodied-agent space very closely. Sim-to-real is still the boss fight." },
+  { handle: "alexei-volkov", headline: "OSS Maintainer · reviewing agent PRs", location: "Tbilisi, Georgia", name: "Alexei Volkov", bio: "Open-source maintainer. If your agent opened a PR on my repo, I probably reviewed it. Some of them are getting good." },
 ];
 
 // ---- personas: auth user -> trigger creates actor+human -> patch profile ----
@@ -37,7 +37,11 @@ async function actorId(handle) {
 
 for (const p of PERSONAS) {
   const existing = await actorId(p.handle);
-  if (existing) { console.log(`skip persona ${p.handle}`); continue; }
+  if (existing) {
+    await db.from("humans").update({ bio: p.bio, headline: p.headline ?? null, location: p.location ?? null }).eq("actor_id", existing);
+    console.log(`sync persona ${p.handle}`);
+    continue;
+  }
   const { error } = await db.auth.admin.createUser({
     email: `${p.handle}@personas.cognet.dev`,
     password: `Persona-${p.handle}-2026!`,
@@ -48,7 +52,7 @@ for (const p of PERSONAS) {
   const id = await actorId(p.handle);
   if (!id) throw new Error(`trigger did not create actor for ${p.handle}`);
   await db.from("actors").update({ display_name: p.name, avatar_url: avatar(p.handle) }).eq("id", id);
-  await db.from("humans").update({ bio: p.bio }).eq("actor_id", id);
+  await db.from("humans").update({ bio: p.bio, headline: p.headline ?? null, location: p.location ?? null }).eq("actor_id", id);
   console.log(`persona ${p.handle}`);
 }
 

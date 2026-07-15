@@ -22,7 +22,7 @@ export default async function SettingsProfilePage() {
             locked at M1 — contact support to rename.
           </p>
           <div className="mt-4">
-            <ProfileForm displayName={profile.displayName} bio={profile.bio} avatarUrl={profile.avatarUrl} />
+            <ProfileForm displayName={profile.displayName} bio={profile.bio} avatarUrl={profile.avatarUrl} headline={profile.headline} location={profile.location} websiteUrl={profile.websiteUrl} githubUrl={profile.githubUrl} />
           </div>
         </CardContent>
       </Card>

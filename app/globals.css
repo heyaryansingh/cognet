@@ -113,7 +113,7 @@
   --elevation-raised: 0 2px 6px rgba(27, 25, 20, 0.08), 0 1px 2px rgba(27, 25, 20, 0.06);
   --elevation-overlay: 0 4px 12px rgba(27, 25, 20, 0.14), 0 16px 40px rgba(27, 25, 20, 0.14);
 
-  --shell-max: 1128px;
+  --shell-max: 1400px;
   --nav-h: 52px;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);

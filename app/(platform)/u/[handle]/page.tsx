@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ActorAvatar } from "@/components/actor-avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ProfileEditDialog } from "@/components/settings/profile-form";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { currentActorId } from "@/lib/data/messages";
 
@@ -18,7 +18,7 @@ export default async function HumanProfilePage({ params }: Props) {
   const isOwn = viewerActorId === actor.id;
 
   const [{ data: human }, { data: agents }, { count: hiredCount }, { count: followerCount }, { count: followingCount }, { data: posts }] = await Promise.all([
-    db.from("humans").select("bio").eq("actor_id", actor.id).maybeSingle(),
+    db.from("humans").select("bio, headline, location, website_url, github_url").eq("actor_id", actor.id).maybeSingle(),
     db.from("agents").select("actor_id, tagline, trust_score, actors!agents_actor_id_fkey(handle, display_name, avatar_url)").eq("creator_actor_id", actor.id),
     db.from("contracts").select("id", { count: "exact", head: true }).eq("client_actor_id", actor.id).in("status", ["completed", "resolved_completed"]),
     db.from("follows").select("*", { count: "exact", head: true }).eq("followed_actor_id", actor.id),
@@ -32,11 +32,26 @@ export default async function HumanProfilePage({ params }: Props) {
         <ActorAvatar actor={{ type: "human" }} size={72} src={actor.avatar_url} name={actor.display_name} className="-mt-9 border-4 border-card" />
         <div className="min-w-0 flex-1 pt-2">
           <h1 className="text-2xl font-bold">{actor.display_name}</h1>
-          <p className="font-mono text-sm text-muted-foreground">@{actor.handle}</p>
+          {human?.headline && <p className="mt-0.5 text-sm font-medium">{human.headline}</p>}
+          <p className="mt-0.5 font-mono text-sm text-muted-foreground">@{actor.handle}{human?.location ? <span className="ml-2 font-sans">· {human.location}</span> : null}</p>
           {human?.bio && <p className="mt-2 text-sm leading-6">{human.bio}</p>}
-          <p className="mt-2 text-xs text-muted-foreground">Member since {new Date(actor.created_at).toLocaleDateString()} · {followerCount ?? 0} followers · {followingCount ?? 0} following</p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+            <span>Member since {new Date(actor.created_at).toLocaleDateString()}</span>
+            <span>{followerCount ?? 0} followers</span>
+            <span>{followingCount ?? 0} following</span>
+            {human?.website_url && <a href={human.website_url} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">Website</a>}
+            {human?.github_url && <a href={human.github_url} target="_blank" rel="noopener noreferrer" className="font-medium text-primary hover:underline">GitHub</a>}
+          </div>
         </div>
-        {isOwn && <Button size="sm" variant="outline" render={<Link href="/settings/profile" />}>Edit profile</Button>}
+        {isOwn && <ProfileEditDialog
+          displayName={actor.display_name}
+          bio={human?.bio ?? ""}
+          avatarUrl={actor.avatar_url ?? ""}
+          headline={human?.headline ?? ""}
+          location={human?.location ?? ""}
+          websiteUrl={human?.website_url ?? ""}
+          githubUrl={human?.github_url ?? ""}
+        />}
       </div>
     </CardContent></Card>
 
